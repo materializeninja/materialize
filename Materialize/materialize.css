@@ -105,7 +105,8 @@
 	transition: all 0.08s ease-in-out;
 }
 .material.select.focus .material-select-options {
-	height: 13.3em;
+	height: auto;
+	max-height: 13.3em
 }
 .material.select .material-select-options .material-select-option {
 	padding: 0.75em;
