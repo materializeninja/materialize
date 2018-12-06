@@ -92,3 +92,5 @@ class Ninja {
 		return ceil ? Math.ceil(width) : width;
 	}
 }
+
+const _n = new Ninja();

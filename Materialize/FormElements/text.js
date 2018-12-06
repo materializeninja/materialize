@@ -6,7 +6,6 @@ class MaterializeText extends MaterializeField {
         const options = Object.assign({
             element: null,
             parent: null,
-			ninja: null,
 			value: null,
         }, args[0]);
 
@@ -24,17 +23,17 @@ class MaterializeText extends MaterializeField {
 	}
 
 	bindEvents(){
-		this.ninja.addEventListener(this.element, 'keyup', (event) => {
+		_n.addEventListener(this.element, 'keyup', (event) => {
 			this.value = event.target.value;
 		});
 
-		this.ninja.addEventListener(this.element, 'focusout.ninja', (event) => {
+		_n.addEventListener(this.element, 'focusout.ninja', (event) => {
 			this.focusOut();
 		});
 	}
 
 	focusOut(){
-		if(!this.ninja.empty(this.value)){
+		if(!_n.empty(this.value)){
 			this.parent.classList.add('active');
 		}else{
             this.parent.classList.remove('active');

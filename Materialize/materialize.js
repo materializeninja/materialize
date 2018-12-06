@@ -11,8 +11,6 @@ class Materialize {
             root: materilizeScriptRoot, // path to root dir of materialize.js
         }, args[0]);
 		Object.assign(this, options);
-
-		this.ninja = new Ninja();
 	}
 
 	Form(...args){
@@ -20,11 +18,10 @@ class Materialize {
 			form: null,
 		}, args[0]);
 
-		this.ninja.addJS(this.root + 'materialize.form.js')
+		_n.addJS(this.root + 'materialize.form.js')
 			.then((value) => {
 				this.form = new MaterializeForm({
 					form: options.form,
-					ninja: this.ninja,
 					root: this.root,
 				});
 				this.form.buildIndexes();

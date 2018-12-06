@@ -5,11 +5,8 @@ class MaterializeSelect extends MaterializeField {
 
         const options = Object.assign({
 			value: { },
-
             element: null,
             parent: null,
-
-			ninja: null
         }, args[0]);
 
 		super(options);
@@ -56,17 +53,17 @@ class MaterializeSelect extends MaterializeField {
 
             selectOptionsHTML.append(optionHTML);
 
-			this.ninja.addEventListener(optionHTML, 'mouseenter', (event) => {
+			_n.addEventListener(optionHTML, 'mouseenter', (event) => {
 				event.stopPropagation();
 				optionHTML.classList.add('active');
 			});
 
-			this.ninja.addEventListener(optionHTML, 'mouseleave', (event) => {
+			_n.addEventListener(optionHTML, 'mouseleave', (event) => {
 				event.stopPropagation();
                 optionHTML.classList.remove('active');
 			});
 
-			this.ninja.addEventListener(optionHTML, 'click', (event) => {
+			_n.addEventListener(optionHTML, 'click', (event) => {
 				event.stopPropagation();
 
 				var option = event.target;
@@ -97,9 +94,9 @@ class MaterializeSelect extends MaterializeField {
         var labelSpan = this.parent.getElementsByTagName('LABEL')[0].children[0];
         labelSpan.style.position = 'unset';
 
-        var selectWidth = this.ninja.getWidth(this.element, true);
-        var labelWidth = this.ninja.getWidth(labelSpan, true);
-		var arrowWidth = this.ninja.getWidth(selectArrowHTML, true);
+        var selectWidth = _n.getWidth(this.element, true);
+        var labelWidth = _n.getWidth(labelSpan, true);
+		var arrowWidth = _n.getWidth(selectArrowHTML, true);
         var newWidth = selectWidth >= labelWidth ? selectWidth : labelWidth;
 
 		newWidth = newWidth + arrowWidth
@@ -118,7 +115,7 @@ class MaterializeSelect extends MaterializeField {
         this.parent.classList.add('focus');
 
 		setTimeout(() => {
-			this.ninja.addEventListener(document, 'click.select', (event) => {
+			_n.addEventListener(document, 'click.select', (event) => {
 				this.hideDropDown();
 			});
 		}, 100);
@@ -130,6 +127,6 @@ class MaterializeSelect extends MaterializeField {
 		}
 		this.parent.classList.remove('focus');
 
-   		this.ninja.removeEventListener(document, 'click.select');
+   		_n.removeEventListener(document, 'click.select');
 	}
 }
