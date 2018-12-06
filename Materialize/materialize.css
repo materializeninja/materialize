@@ -1,0 +1,122 @@
+@import url('//fonts.googleapis.com/css?family=Roboto');
+@import url('//fonts.googleapis.com/icon?family=Material+Icons');
+
+.material {
+    display: inline-block;
+    margin: 10px 0;
+	vertical-align: bottom;
+}
+
+/**
+ * Text Input Styles
+ */
+.material.text {
+	font-family: 'Roboto', sans-serif;
+	font-size: 1em;
+    position: relative;
+	cursor: text;	
+}
+.material.text * {
+    cursor: text;
+}
+.material.text label {
+}
+.material.text label span {
+}
+.material.text input {
+	font-size: 1em;
+	background: none;
+	border-width: 0 0 1px 0;
+	border-bottom-color: #000;
+}
+.material.text input:focus {
+	outline: none;
+}
+
+/**
+ * LABELS
+ */
+.material label {
+    display: block;
+    position: relative;
+    height: 1em;
+}
+.material label span {
+	transition: .1s all linear;
+    margin-top: 1em;
+    position: absolute;
+}
+.material.focus label span,
+.material.active label span {
+    margin-top: 0;
+    font-size: 0.8em;
+}
+
+/**
+ * Select Field
+ */
+.material.select {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1em;
+    position: relative;
+	cursor: pointer;
+}
+.material.select * {
+    cursor: pointer;
+}
+.material.select label {
+}
+.material.select label span {
+}
+.material.select select {
+	position: absolute;
+    z-index: -5;
+    left: -5000px;
+	font-size: 1em;
+}
+.material.select .material-select-element {
+    border-bottom: 1px solid #000;
+    display: flex;
+	flex-direction: row-reverse;
+    height: 1em;
+    padding: 2px 0px;
+}
+.material.select .material-select-element .material-select-values{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+.material.select .material-select-element .material-icons {
+    padding: 0 0.1em;
+	line-height: 0.8em;
+}
+.material.select .material-select-options {
+	display: flex;
+    flex-direction: column;
+    background: #FFF;
+    z-index: 8;
+    position: absolute;
+    top: 1.4em;
+	left: 0;
+	right: 0;
+    height: 0em;
+    overflow: scroll;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
+	transition: all 0.08s ease-in-out;
+}
+.material.select.focus .material-select-options {
+	height: 13.3em;
+}
+.material.select .material-select-options .material-select-option {
+	padding: 0.75em;
+}
+.material.select .material-select-options .material-select-option.active {
+	background-color: rgba(0,0,0,0.06);
+}
+
+
+
+
+
+
+
