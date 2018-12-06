@@ -2,6 +2,7 @@ class Ninja {
 
 	constructor(...args){
 		console.log('Ninja');
+		console.log(this);
 
 		const options = Object.assign({
 			scriptsArray: [ ],
@@ -10,17 +11,23 @@ class Ninja {
         Object.assign(this, options);	
 	}
 
+	on(...args){ this.addEventListener(...args); }
 	addEventListener(ele, event, func) {
 		if(typeof(this.functionMap[ele]) == 'undefined'){
 			this.functionMap[ele] = { };
 		};
 
+		let _event = event.includes('.') ? event.split('.')[0] : event;
+
     	this.functionMap[ele][event] = func;
-	    ele.addEventListener(event.split('.')[0], this.functionMap[ele][event]);
+	    ele.addEventListener(event, this.functionMap[ele][event]);
 	}
 
+	off(...args){ this.removeEventListener(...args); }
 	removeEventListener(ele, event) {
-	    ele.removeEventListener(event.split('.')[0], this.functionMap[ele][event]);
+        let _event = event.includes('.') ? event.split('.')[0] : event;
+
+	    ele.removeEventListener(event, this.functionMap[ele][event]);
     	delete this.functionMap[ele][event];
 	}
 

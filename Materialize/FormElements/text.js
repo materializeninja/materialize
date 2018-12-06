@@ -23,11 +23,11 @@ class MaterializeText extends MaterializeField {
 	}
 
 	bindEvents(){
-		_n.addEventListener(this.element, 'keyup', (event) => {
+		_n.on(this.element, 'keyup', (event) => {
 			this.value = event.target.value;
 		});
 
-		_n.addEventListener(this.element, 'focusout.ninja', (event) => {
+		_n.on(this.element, 'focusout.ninja', (event) => {
 			this.focusOut();
 		});
 	}

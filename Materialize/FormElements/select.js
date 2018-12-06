@@ -53,17 +53,17 @@ class MaterializeSelect extends MaterializeField {
 
             selectOptionsHTML.append(optionHTML);
 
-			_n.addEventListener(optionHTML, 'mouseenter', (event) => {
+			_n.on(optionHTML, 'mouseenter', (event) => {
 				event.stopPropagation();
 				optionHTML.classList.add('active');
 			});
 
-			_n.addEventListener(optionHTML, 'mouseleave', (event) => {
+			_n.on(optionHTML, 'mouseleave', (event) => {
 				event.stopPropagation();
                 optionHTML.classList.remove('active');
 			});
 
-			_n.addEventListener(optionHTML, 'click', (event) => {
+			_n.on(optionHTML, 'click', (event) => {
 				event.stopPropagation();
 
 				var option = event.target;
@@ -105,7 +105,7 @@ class MaterializeSelect extends MaterializeField {
 	}
 
 	bindEvents(){
-		this.parent.addEventListener('click', (event) => { 
+		_n.on(this.parent, 'click', (event) => { 
 			this.revealDropDown(); 
 		}, false);
 	}
@@ -115,7 +115,7 @@ class MaterializeSelect extends MaterializeField {
         this.parent.classList.add('focus');
 
 		setTimeout(() => {
-			_n.addEventListener(document, 'click.select', (event) => {
+			_n.on(document, 'click.select', (event) => {
 				this.hideDropDown();
 			});
 		}, 100);
@@ -127,6 +127,6 @@ class MaterializeSelect extends MaterializeField {
 		}
 		this.parent.classList.remove('focus');
 
-   		_n.removeEventListener(document, 'click.select');
+   		_n.off(document, 'click.select');
 	}
 }
