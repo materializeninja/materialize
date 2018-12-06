@@ -1,0 +1,40 @@
+<script src="/Materialize/ninja.js"></script>
+<script src="/Materialize/materialize.js"></script>
+
+<script>
+	const NinjaForm = new Materialize({
+		root: '/Materialize/'
+	}).Form({
+		form: 'NinjaForm',
+	});
+</script>
+
+<div id="NinjaForm">
+	<div class="material text">
+        <label for="default-text-field"><span>Default Text Field</span></label>
+		<input type="text" id="default-text-field" name="default-text-field" value="" tabindex="1">
+	</div>
+
+    <div class="material text">
+        <label for="default-text-field-2"><span>Default Text Field 2</span></label>
+        <input type="text" id="default-text-field-2" name="default-text-field-2" value="" tabindex="5">
+    </div>
+
+
+	<div class="material select">
+		<label for="default-select-field"><span>Default Select Field</span></label>
+		<select tabindex="10">
+			<option value="test1">Test 1</option>
+            <option value="test2">Test 2</option>
+            <option value="test3">Test 3</option>
+            <option value="test1">Test 1</option>
+            <option value="test2">Test 2</option>
+            <option value="test3">Test 3</option>
+            <option value="test1">Test 1</option>
+            <option value="test2">Test 2</option>
+            <option value="test3">Test 3</option>
+		</select>
+	</div>
+</div>
+
+<link href="Materialize/materialize.css" rel="stylesheet">
