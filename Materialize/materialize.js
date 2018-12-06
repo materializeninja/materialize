@@ -3,8 +3,12 @@ class Materialize {
 	constructor(...args){
 		console.log('Materialize');
 
+		const materilizeScriptTag = document.querySelectorAll('script[src$="materialize.js"]')[0];
+		const materilizeScriptTagSrc = materilizeScriptTag.getAttribute('src');
+		const materilizeScriptRoot = materilizeScriptTagSrc.replace('materialize.js', '');
+
         const options = Object.assign({
-            root: null, // path to root dir of materialize.js
+            root: materilizeScriptRoot, // path to root dir of materialize.js
         }, args[0]);
 		Object.assign(this, options);
 
