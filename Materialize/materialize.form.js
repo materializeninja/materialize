@@ -13,38 +13,60 @@ class MaterializeForm {
 		this.form = document.getElementById(options.form);
 	}
 
-	buildIndexes(...args){
+	async buildIndexes(...args){
 		const options = args;
 		const matches = this.form.querySelectorAll('[tabindex]');
 
-        _n.addJS(this.root + 'FormElements/field.js')
-			.then((value) => {
-				matches.forEach((ele) => {
-					switch(true){
-						case ele.hasAttribute('type') && ele.getAttribute('type') == 'text':
-						
-							_n.addJS(this.root + 'FormElements/text.js')
-								.then((value) => {
-									this.elements[ele.getAttribute('tabindex')] = new MaterializeText({
-										element: ele,
-										parent: ele.closest('div.material.text'),
-									});
-								}
-							);
-						break;
-						case ele.tagName == 'SELECT':
-                            _n.addJS(this.root + 'FormElements/select.js')
-								.then((value) => {
-                                    this.elements[ele.getAttribute('tabindex')] = new MaterializeSelect({
-                                        element: ele,
-                                        parent: ele.closest('div.material.select'),
-                                    });
-								}
-							);
-						break;
-					}
+		try {
+			await _n.addJS(this.root + 'FormElements/field.js');
+
+			matches.forEach(async (ele) => {
+
+				switch(true){
+					case ele.hasAttribute('type') && ele.getAttribute('type') == 'text':
+						await this.processInput(ele);
+					break;
+					case ele.tagName == 'SELECT':
+						await this.processSelect(ele);
+					break;
+				}
+
+			});
+		} catch(err) {
+		}
+	}
+
+	async processInput(ele){
+		return new Promise(async (resolve, reject) => {
+			try {
+				await _n.addJS(this.root + 'FormElements/text.js');
+				
+				this.elements[ele.getAttribute('tabindex')] = new MaterializeText({
+					element: ele,
+					parent: ele.closest('div.material.text'),
 				});
+
+				resolve(ele);
+			} catch (err) {
+				reject(err);
 			}
-		);
+		});
+	}
+
+	processSelect(ele){
+        return new Promise(async (resolve, reject) => {
+            try {
+				await _n.addJS(this.root + 'FormElements/select.js')
+
+				this.elements[ele.getAttribute('tabindex')] = new MaterializeSelect({
+					element: ele,
+					parent: ele.closest('div.material.select'),
+				});
+
+                resolve(ele);
+            } catch (err) {
+                reject(err);
+            }
+		});
 	}
 }

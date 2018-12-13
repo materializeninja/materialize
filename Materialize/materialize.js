@@ -13,18 +13,21 @@ class Materialize {
 		Object.assign(this, options);
 	}
 
-	Form(...args){
+	async Form(...args){
 		const options = Object.assign({
 			form: null,
 		}, args[0]);
 
-		_n.addJS(this.root + 'materialize.form.js')
-			.then((value) => {
-				this.form = new MaterializeForm({
-					form: options.form,
-					root: this.root,
-				});
-				this.form.buildIndexes();
-			}).catch();
+		try {
+			let value = await _n.addJS(this.root + 'materialize.form.js');
+
+			this.form = new MaterializeForm({
+				form: options.form,
+				root: this.root,
+			});
+
+			this.form.buildIndexes();
+		} catch(err) {
+		}
 	}
 }
