@@ -17,6 +17,9 @@ class MaterializeField {
 //            event.stopImmediatePropagation();
 //            event.preventDefault();
 
+     		let customEvent = new Event('focusin.ninja');
+          	this.element.dispatchEvent(customEvent);
+
 			this.parent.classList.add('focus');
 			this.element.classList.add('focus');
 
@@ -24,7 +27,7 @@ class MaterializeField {
     	        this.parent.classList.remove('focus');
 	            this.element.classList.remove('focus');
 
-				var customEvent = new Event('focusout.ninja');
+				let customEvent = new Event('focusout.ninja');
 				this.element.dispatchEvent(customEvent);
 
 				_n.off(this.element, 'focusout');

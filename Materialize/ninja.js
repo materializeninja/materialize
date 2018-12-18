@@ -12,23 +12,34 @@ class Ninja {
 	}
 
 	on(...args){ this.addEventListener(...args); }
-	addEventListener(ele, event, func) {
-		if(typeof(this.functionMap[ele]) == 'undefined'){
-			this.functionMap[ele] = { };
+	addEventListener(ele, event, func, useCapture = true) {
+		let eleID = ele.getAttribute('id');
+
+		if(this.empty(eleID)){
+			eleID = this.guid();
+			ele.setAttribute('id', eleID);
+		}
+
+		if(typeof(this.functionMap[eleID]) == 'undefined'){
+			this.functionMap[eleID] = { };
 		};
 
 		let _event = event.includes('.') ? event.split('.')[0] : event;
 
-    	this.functionMap[ele][event] = func;
-	    ele.addEventListener(event, this.functionMap[ele][event]);
+console.log(event);
+console.log(_event);
+
+    	this.functionMap[eleID][event] = func;
+	    ele.addEventListener(event, this.functionMap[eleID][event], useCapture);
 	}
 
 	off(...args){ this.removeEventListener(...args); }
-	removeEventListener(ele, event) {
+	removeEventListener(ele, event, useCapture = true) {
         let _event = event.includes('.') ? event.split('.')[0] : event;
+		let eleID = ele.getAttribute('id');
 
-	    ele.removeEventListener(event, this.functionMap[ele][event]);
-    	delete this.functionMap[ele][event];
+	    ele.removeEventListener(event, this.functionMap[eleID][event], useCapture);
+    	delete this.functionMap[eleID][event];
 	}
 
 	addJS(filepath){
@@ -98,6 +109,17 @@ class Ninja {
 		var width = element.getBoundingClientRect().width;
 		return ceil ? Math.ceil(width) : width;
 	}
+
+	guid() {
+		function s4() {
+			return Math.floor((1 + Math.random()) * 0x10000)
+				.toString(16)
+				.substring(1);
+		}
+
+		return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+	}
+
 }
 
 const _n = new Ninja();

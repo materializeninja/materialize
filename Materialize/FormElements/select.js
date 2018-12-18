@@ -58,12 +58,10 @@ class MaterializeSelect extends MaterializeField {
 				optionHTML.classList.add('active');
 			});
 
-			_n.on(optionHTML, 'mouseleave', (event) => {
-				event.stopPropagation();
-                optionHTML.classList.remove('active');
-			});
+			_n.on(optionHTML, 'click.option', (event) => {
+console.log('click-1');
+console.log(optionHTML);
 
-			_n.on(optionHTML, 'click', (event) => {
 				event.stopPropagation();
 
 				var option = event.target;
@@ -80,11 +78,20 @@ class MaterializeSelect extends MaterializeField {
 				selectedValuesHTML.append(selectedOptionHTML);
 				this.value[value] = text;
 
-                this.hideDropDown();
+				this.hideDropDown();
+
+				optionHTML.classList.remove('active');
+			});
+
+			_n.on(optionHTML, 'mouseleave', (event) => {
+				event.stopPropagation();
+
+				optionHTML.classList.remove('active');
 			});
 		});
 
 		this.parent.append(selectOptionsHTML);
+console.log(_n);
 
         /**
          * 1. Get select width
@@ -106,19 +113,29 @@ class MaterializeSelect extends MaterializeField {
 
 	bindEvents(){
 		_n.on(this.parent, 'click', (event) => { 
+console.log('click-2');
 			this.revealDropDown(); 
-		}, false);
+		});
+
+		_n.on(this.element, 'focusin.ninja', (event) => {
+            this.revealDropDown();
+		});
 	}
 
 	revealDropDown(){
+console.log('revealDropDown');
+
 		this.parent.classList.add('active');
         this.parent.classList.add('focus');
 
+/*
 		setTimeout(() => {
-			_n.on(document, 'click.select', (event) => {
+			_n.on(document, 'click', (event) => {
+console.log('document click');
 				this.hideDropDown();
 			});
 		}, 100);
+*/
 	}
 
 	hideDropDown(){
@@ -127,6 +144,6 @@ class MaterializeSelect extends MaterializeField {
 		}
 		this.parent.classList.remove('focus');
 
-   		_n.off(document, 'click.select');
+//   		_n.off(document, 'click');
 	}
 }
