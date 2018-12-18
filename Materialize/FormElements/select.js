@@ -1,12 +1,11 @@
 class MaterializeSelect extends MaterializeField {
 
     constructor(...args){
-		console.log('MaterializeSelect');
-
         const options = Object.assign({
 			value: { },
             element: null,
             parent: null,
+			multiselect: false,
         }, args[0]);
 
 		super(options);
@@ -16,42 +15,88 @@ class MaterializeSelect extends MaterializeField {
 		this.bindEvents();
     }
 
+	addOptionValue(optionObj){
+		let value = optionObj.dataset.value;
+		let text = optionObj.innerText;
+
+		let selectedOptionHTML = document.createElement('div');
+		selectedOptionHTML.dataset.value = value;
+		selectedOptionHTML.innerText = text;
+
+		switch(this.multiselect){
+			case false:
+				this.parts.selectedValuesHTML.innerHTML = '';
+				this.value = { };
+			break;
+			case true:
+			break;
+		}
+
+		this.parts.selectedValuesHTML.append(selectedOptionHTML);
+
+		if(!_n.empty(value)){
+			this.value[value] = text;
+		}
+
+		this.hideDropDown();
+	}
+
+    bindEvents(){
+		let _event = null;
+
+        _n.on(this.parent, 'click', (event) => {
+			this.element.focus();
+
+            this.revealDropDown();
+        });
+
+		_n.on(this.element, 'keydown', (event) => {
+			var keyCode = event.which || event.keyCode || 0;
+			
+			if(keyCode == 9){
+				this.hideDropDown();
+			};
+		});
+    }
+
 	buildSelectElement(){
+		this.parts = { };
+
 		/**
 		 * Build area to put selected value(s)
 		 */
-		var selectElementHTML = document.createElement('div');
-		selectElementHTML.classList.add('material-select-element');
+		this.parts.selectElementHTML = document.createElement('div');
+		this.parts.selectElementHTML.classList.add('material-select-element');
 
-		var selectedValuesHTML = document.createElement('div');
-		selectedValuesHTML.classList.add('material-select-values');
+		this.parts.selectedValuesHTML = document.createElement('div');
+		this.parts.selectedValuesHTML.classList.add('material-select-values');
 
-		var selectArrowHTML = document.createElement('i');
-		selectArrowHTML.classList.add('material-icons');
-		selectArrowHTML.innerHTML = 'keyboard_arrow_down';
+		this.parts.selectArrowHTML = document.createElement('i');
+		this.parts.selectArrowHTML.classList.add('material-icons');
+		this.parts.selectArrowHTML.innerHTML = 'keyboard_arrow_down';
 
-		selectElementHTML.append(selectArrowHTML);
-        selectElementHTML.append(selectedValuesHTML);
-		this.parent.append(selectElementHTML);
+		this.parts.selectElementHTML.append(this.parts.selectArrowHTML);
+        this.parts.selectElementHTML.append(this.parts.selectedValuesHTML);
+		this.parent.append(this.parts.selectElementHTML);
 
 		/**
 		 * Build new material drop down
 		 */
-		var selectOptionsHTML = document.createElement('div');
-		selectOptionsHTML.classList.add('material-select-options');
+		this.parts.selectOptionsHTML = document.createElement('div');
+		this.parts.selectOptionsHTML.classList.add('material-select-options');
 
 		this.element.childNodes.forEach((ele) => {
 			if(ele.nodeType > 1){
 				return;
 			}
 
-			var optionHTML = document.createElement('div');
+			let optionHTML = document.createElement('div');
 
 			optionHTML.classList.add('material-select-option');
-			optionHTML.innerHTML = ele.textContent;
+			optionHTML.innerHTML = _n.empty(ele.textContent) ? '&#8203;' : ele.textContent;
 			optionHTML.dataset.value = ele.value;
 
-            selectOptionsHTML.append(optionHTML);
+            this.parts.selectOptionsHTML.append(optionHTML);
 
 			_n.on(optionHTML, 'mouseenter', (event) => {
 				event.stopPropagation();
@@ -59,91 +104,70 @@ class MaterializeSelect extends MaterializeField {
 			});
 
 			_n.on(optionHTML, 'click.option', (event) => {
-console.log('click-1');
-console.log(optionHTML);
-
 				event.stopPropagation();
 
-				var option = event.target;
-				var value = option.dataset.value;
-				var text = option.innerText;
+				let option = event.target;
 
-				var selectedOptionHTML = document.createElement('div');
-				selectedOptionHTML.dataset.value = value;
-				selectedOptionHTML.innerText = text;
-
-				selectedValuesHTML.innerHTML = '';
-				this.value = { };
-
-				selectedValuesHTML.append(selectedOptionHTML);
-				this.value[value] = text;
-
-				this.hideDropDown();
-
-				optionHTML.classList.remove('active');
+				this.addOptionValue(option);
 			});
 
 			_n.on(optionHTML, 'mouseleave', (event) => {
 				event.stopPropagation();
-
 				optionHTML.classList.remove('active');
 			});
 		});
 
-		this.parent.append(selectOptionsHTML);
-console.log(_n);
+		this.parent.append(this.parts.selectOptionsHTML);
 
         /**
          * 1. Get select width
          * 2. Get label width
          * 3. Set parent width to which ever is greater
          */
-        var labelSpan = this.parent.getElementsByTagName('LABEL')[0].children[0];
-        labelSpan.style.position = 'unset';
+        this.parts.labelSpan = this.parent.getElementsByTagName('LABEL')[0].children[0];
+        this.parts.labelSpan.style.position = 'unset';
 
-        var selectWidth = _n.getWidth(this.element, true);
-        var labelWidth = _n.getWidth(labelSpan, true);
-		var arrowWidth = _n.getWidth(selectArrowHTML, true);
-        var newWidth = selectWidth >= labelWidth ? selectWidth : labelWidth;
+        let selectWidth = _n.getWidth(this.element, true);
+        let labelWidth = _n.getWidth(this.parts.labelSpan, true);
+		let arrowWidth = _n.getWidth(this.parts.selectArrowHTML, true);
+        let newWidth = selectWidth >= labelWidth ? selectWidth : labelWidth;
 
 		newWidth = newWidth + arrowWidth
         this.parent.style.width = newWidth + 'px';
-        labelSpan.removeAttribute('style');
+        this.parts.labelSpan.removeAttribute('style');
 	}
 
-	bindEvents(){
-		_n.on(this.parent, 'click', (event) => { 
-console.log('click-2');
-			this.revealDropDown(); 
-		});
+    focusIn(){
+        super.focusIn();
 
-		_n.on(this.element, 'focusin.ninja', (event) => {
-            this.revealDropDown();
-		});
-	}
+		this.element.focus();
+        this.revealDropDown();
+    }
 
-	revealDropDown(){
-console.log('revealDropDown');
-
-		this.parent.classList.add('active');
-        this.parent.classList.add('focus');
-
-/*
-		setTimeout(() => {
-			_n.on(document, 'click', (event) => {
-console.log('document click');
-				this.hideDropDown();
-			});
-		}, 100);
-*/
-	}
+    focusOut(event){
+		//this.hideDropDown();
+    }
 
 	hideDropDown(){
 		if(Object.keys(this.value).length === 0){
 			this.parent.classList.remove('active');
 		}
-		this.parent.classList.remove('focus');
 
-//   		_n.off(document, 'click');
+		this.parent.classList.remove('focus');
+		_n.off(document, 'click.select');
 	}
+
+	revealDropDown(){
+
+        this.parent.classList.add('active');
+        this.parent.classList.add('focus');
+
+        setTimeout(() => {
+            _n.on(document, 'click.select', (event) => {
+                this.hideDropDown();
+            }, {
+                once: true
+            });
+        }, 100);
+    }
 }

@@ -1,9 +1,6 @@
 class Ninja {
 
 	constructor(...args){
-		console.log('Ninja');
-		console.log(this);
-
 		const options = Object.assign({
 			scriptsArray: [ ],
 			functionMap: { },
@@ -12,9 +9,10 @@ class Ninja {
 	}
 
 	on(...args){ this.addEventListener(...args); }
-	addEventListener(ele, event, func, useCapture = true) {
-		let eleID = ele.getAttribute('id');
-
+	addEventListener(ele, event, func, options) {
+		let eleID = ele === document ? ele : ele.getAttribute('id');
+		let _event = event.includes('.') ? event.split('.')[0] : event;
+		
 		if(this.empty(eleID)){
 			eleID = this.guid();
 			ele.setAttribute('id', eleID);
@@ -24,21 +22,16 @@ class Ninja {
 			this.functionMap[eleID] = { };
 		};
 
-		let _event = event.includes('.') ? event.split('.')[0] : event;
-
-console.log(event);
-console.log(_event);
-
     	this.functionMap[eleID][event] = func;
-	    ele.addEventListener(event, this.functionMap[eleID][event], useCapture);
+	    ele.addEventListener(_event, this.functionMap[eleID][event], options);
 	}
 
 	off(...args){ this.removeEventListener(...args); }
-	removeEventListener(ele, event, useCapture = true) {
+	removeEventListener(ele, event, options) {
+	    let eleID = ele === document ? ele : ele.getAttribute('id');
         let _event = event.includes('.') ? event.split('.')[0] : event;
-		let eleID = ele.getAttribute('id');
 
-	    ele.removeEventListener(event, this.functionMap[eleID][event], useCapture);
+	    ele.removeEventListener(_event, this.functionMap[eleID][event], options);
     	delete this.functionMap[eleID][event];
 	}
 

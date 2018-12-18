@@ -1,8 +1,6 @@
 class Materialize {
 
 	constructor(...args){
-		console.log('Materialize');
-
 		const materilizeScriptTag = document.querySelectorAll('script[src$="materialize.js"]')[0];
 		const materilizeScriptTagSrc = materilizeScriptTag.getAttribute('src');
 		const materilizeScriptRoot = materilizeScriptTagSrc.replace('materialize.js', '');
@@ -11,6 +9,8 @@ class Materialize {
             root: materilizeScriptRoot, // path to root dir of materialize.js
         }, args[0]);
 		Object.assign(this, options);
+
+		return this;
 	}
 
 	async Form(...args){
@@ -29,5 +29,7 @@ class Materialize {
 			this.form.buildIndexes();
 		} catch(err) {
 		}
+
+		return this;
 	}
 }
