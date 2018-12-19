@@ -46,8 +46,6 @@ class MaterializeSelect extends MaterializeField {
 
         _n.on(this.parent, 'click', (event) => {
 			this.element.focus();
-
-            this.revealDropDown();
         });
 
 		_n.on(this.element, 'keydown', (event) => {
@@ -58,6 +56,11 @@ class MaterializeSelect extends MaterializeField {
 			};
 		});
     }
+
+	bindOptionKeyEvents(optionObj){
+	}
+	unbindOptionKeyEvents(optionObj){
+	}
 
 	buildSelectElement(){
 		this.parts = { };
@@ -100,19 +103,22 @@ class MaterializeSelect extends MaterializeField {
 
 			_n.on(optionHTML, 'mouseenter', (event) => {
 				event.stopPropagation();
+
+				this.bindOptionKeyEvents(optionHTML);
 				optionHTML.classList.add('active');
 			});
 
 			_n.on(optionHTML, 'click.option', (event) => {
 				event.stopPropagation();
 
-				let option = event.target;
-
-				this.addOptionValue(option);
+				this.unbindOptionKeyEvents(optionHTML);
+				this.addOptionValue(optionHTML);
 			});
 
 			_n.on(optionHTML, 'mouseleave', (event) => {
 				event.stopPropagation();
+
+				this.unbindOptionKeyEvents(optionHTML);
 				optionHTML.classList.remove('active');
 			});
 		});
@@ -154,7 +160,11 @@ class MaterializeSelect extends MaterializeField {
 		}
 
 		this.parent.classList.remove('focus');
-		_n.off(document, 'click.select');
+
+		/*let _event = new Event('click');
+		document.dispatchEvent(_event);*/
+
+		_n.off(document.body, 'click.select');
 	}
 
 	revealDropDown(){
@@ -163,10 +173,14 @@ class MaterializeSelect extends MaterializeField {
         this.parent.classList.add('focus');
 
         setTimeout(() => {
-            _n.on(document, 'click.select', (event) => {
+            _n.on(document.body, 'click.select', (event) => {
+				event.stopPropagation();
+	
                 this.hideDropDown();
-            }, {
-                once: true
+
+				_n.off(document.body, 'click.select');
+            /*}, {
+                once: true*/
             });
         }, 100);
     }
