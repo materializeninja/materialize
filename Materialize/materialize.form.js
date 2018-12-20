@@ -22,6 +22,7 @@ class MaterializeForm {
 		let matchLength = matches.length;
 
 		try {
+			await _n.addJS(this.root + 'FormElements/validators.js');
 			await _n.addJS(this.root + 'FormElements/field.js');
 
 			matches.forEach(async (ele) => {

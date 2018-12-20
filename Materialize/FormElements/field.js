@@ -1,13 +1,17 @@
-class MaterializeField {
+class MaterializeField extends MaterializeValidators {
 
 	constructor(...args){
         const options = Object.assign({
 			element: null,
 			parent: null,
+			validators: null,
         }, args[0]);
+
+		super(options);
 		Object.assign(this, options);
 
 		this.applyFocusEventListener();
+		this.validators = new MaterializeValidators();
     }
 
 	applyFocusEventListener(){
