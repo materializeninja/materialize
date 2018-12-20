@@ -4,6 +4,12 @@ class Ninja {
 		const options = Object.assign({
 			scriptsArray: [ ],
 			functionMap: { },
+
+            directionKeys: [9,13,33,34,35,36,37,38,39,40], //13 && 9 are enter and tab keys
+            letterKeys: [65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90],
+            specialCharKeys: [106,107,109,111,186,187,188,189,190,191,192,219,220,221,222],
+            shiftSpecialCharKeys: [46,48,49,50,51,52,53,54,55,56,57], //shiftKey must be pressed for these keys to be special characters
+
 			arrowKeys: {
 				"37":"LEFT",
 				"38":"UP",

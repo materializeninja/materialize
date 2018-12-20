@@ -10,6 +10,8 @@ class MaterializeText extends MaterializeField {
 		super(options);
         Object.assign(this, options);
 
+		this.adjustFieldSize();
+		this.applyValidators();
 		this.bindEvents();
     }
 
@@ -20,10 +22,40 @@ class MaterializeText extends MaterializeField {
 		return this._value
 	}
 
+	adjustFieldSize(){
+		let labelSpan = this.parent.getElementsByTagName('LABEL')[0].children[0];
+		let labelWidth = _n.getWidth(labelSpan, true);
+
+		this.parent.style.width = labelWidth + 'px';
+	}
+
+	applyValidators(){
+		if('validator' in this.parent.dataset){
+			let validatorString = this.parent.dataset.validator;
+			let validators = new MaterializeValidators();
+			let validator = validators.getValidator(validatorString);
+
+			this.validator = validator;
+			this.errorMessage = validators.errorMessage;
+
+			let keydownEventValidators = [
+				'integer'
+			];
+
+			if(keydownEventValidators.includes(validatorString)){
+				this.bindKeydownValidatorEvents();
+			}
+		}
+	}
+
 	bindEvents(){
 		_n.on(this.element, 'keyup', (event) => {
 			this.value = event.target.value;
 		});
+	}
+
+	bindKeydownValidatorEvents(){
+		super.bindKeydownValidatorEvents();
 	}
 
 	focusIn(){

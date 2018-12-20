@@ -6,7 +6,7 @@ class MaterializeSelect extends MaterializeField {
             element: null,
             parent: null,
 			multiselect: false,
-			parts: [ ], // node parts of the select object
+			parts: { }, // node parts of the select object
 			options: [ ], // node options of select object
 			activeOption: null, // node of current active option
         }, args[0]);
@@ -118,8 +118,6 @@ class MaterializeSelect extends MaterializeField {
 	}
 
 	buildSelectElement(){
-		this.parts = { };
-
 		/**
 		 * Build area to put selected value(s)
 		 */
