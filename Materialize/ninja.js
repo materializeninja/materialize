@@ -133,6 +133,10 @@ class Ninja {
 		return keyCode;
 	}
 
+	getKeyByValue(object, value) {
+		return Object.keys(object).find(key => object[key] === value);
+	}
+
     on(ele, event, func, options){
         let eleID = ele === document ? ele : ele.getAttribute('id');
         let _event = event.includes('.') ? event.split('.')[0] : event;

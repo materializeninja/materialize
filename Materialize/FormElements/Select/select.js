@@ -26,6 +26,7 @@ class MaterializeSelect extends MaterializeField {
 		this.activeOption = optionObj;
 
 		optionObj.classList.add('active');
+		optionObj.focus();
 	}
 	deactivateOption(optionObj = null){
 		optionObj = optionObj === null ? this.activeOption : optionObj;
@@ -70,7 +71,7 @@ class MaterializeSelect extends MaterializeField {
         });
 
 		_n.on(this.element, 'keydown', (event) => {
-			var keyCode = _n.keyCode(event);
+			let keyCode = _n.keyCode(event);
 			
 			if(keyCode == 9){
 				this.hideDropDown();
@@ -79,16 +80,41 @@ class MaterializeSelect extends MaterializeField {
     }
 
 	bindOptionKeyEvents(optionObj){
-		_n.on(optionObj, 'keydown', (event) => {
-			var keyCode = _n.keyCode(event);
+		_n.on(optionObj, 'keydown.option', (event) => {
+			let keyCode = _n.keyCode(event);
+			let optionsCount = Object.keys(this.options).length;
+			let optionKey = null;
+			let nextOptionKey = null;
+			let nextOptionObj = null;
+			let arrow = null;
 
-			if(_n.isArrowKey(keyCode)){
-				console.log('yay arrow');
+			if(arrow = _n.isArrowKey(keyCode)){
+				event.preventDefault(); // stop scrolling
+
+				switch(arrow){
+					case 'UP':
+                        optionKey = parseInt(_n.getKeyByValue(this.options, optionObj));
+                        nextOptionKey = (optionKey - 1) < 0 ? (optionsCount - 1) : optionKey - 1;
+                        nextOptionObj = this.options[nextOptionKey];
+
+                        this.activateOption(nextOptionObj);
+					break;
+					case 'DOWN':
+						optionKey = parseInt(_n.getKeyByValue(this.options, optionObj));
+						nextOptionKey = (optionKey + 1) >= optionsCount ? 0 : optionKey + 1;
+						nextOptionObj = this.options[nextOptionKey];
+
+						this.activateOption(nextOptionObj);
+					break;
+				}
+			} else if(keyCode == 13) {
+				this.deactivateOption(optionObj);
+				this.addOptionValue(optionObj);
 			};
 		});
 	}
 	unbindOptionKeyEvents(optionObj){
-		_n.off(optionObj, 'keydown');
+		_n.off(optionObj, 'keydown.option');
 	}
 
 	buildSelectElement(){
@@ -127,6 +153,7 @@ class MaterializeSelect extends MaterializeField {
 			optionHTML.classList.add('material-select-option');
 			optionHTML.innerHTML = _n.empty(ele.textContent) ? '&#8203;' : ele.textContent;
 			optionHTML.dataset.value = ele.value;
+			optionHTML.setAttribute('tabindex', '-1');
 
             this.options.push(optionHTML);
             this.parts.selectOptionsHTML.append(optionHTML);
@@ -177,6 +204,8 @@ class MaterializeSelect extends MaterializeField {
     focusIn(){
         super.focusIn();
 
+		//this.element.focus();
+
         this.revealDropDown();
 		this.activateOption();
     }
@@ -196,6 +225,7 @@ class MaterializeSelect extends MaterializeField {
 		}
 
 		this.parent.classList.remove('focus');
+		this.activeOption = null;
 
 		/*let _event = new Event('click');
 		document.dispatchEvent(_event);*/
