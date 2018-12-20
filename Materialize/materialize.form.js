@@ -60,7 +60,8 @@ class MaterializeForm {
 		const options = Object.assign({
 			field: false,
 			event: false, //information/options https://api.jquery.com/category/events/event-object/
-			direction: false //options are closest/next/previous/absolute (absolute required field to be filled out this will force the tab to this field specifically)
+			direction: false, //options are closest/next/previous/absolute (absolute required field to be filled out this will force the tab to this field specifically)
+			isTab: false,
         }, args[0]);
 
 		let event = null;
@@ -77,6 +78,8 @@ class MaterializeForm {
 				currentFocusedObj = this.elements[Object.keys(this.elements)[this.currentFocus]];
 
 				event = new Event('focusout');
+				event.isTab = options.isTab;
+
 				this.currentFocus = this.currentFocus + 1;
 
 				if(this.currentFocus >= eleLength){
@@ -95,6 +98,8 @@ class MaterializeForm {
                 currentFocusedObj = this.elements[Object.keys(this.elements)[this.currentFocus]];
 
                 event = new Event('focusout');
+				event.isTab = options.isTab;
+
                 this.currentFocus = this.currentFocus - 1;
 
                 if(this.currentFocus < 0){
@@ -113,7 +118,7 @@ class MaterializeForm {
 
 	hijackTabbing(){
 		_n.on(document, 'keydown', (event) => {
-			var keyCode = event.which || event.keyCode || 0;
+			var keyCode = _n.keyCode(event);
 
 			if(keyCode === 9){
 				event.preventDefault();
@@ -121,12 +126,14 @@ class MaterializeForm {
 				switch(event.shiftKey){
 					case false:
 						this.forceTab({
-							direction: 'next'
+							direction: 'next',
+							isTab: true,
 						});
 					break;
 					case true:
 					    this.forceTab({
-                            direction: 'previous'
+                            direction: 'previous',
+							isTab: true,
                         });
 					break;
 				}
@@ -137,7 +144,7 @@ class MaterializeForm {
 	async processInput(ele){
 		return new Promise(async (resolve, reject) => {
 			try {
-				await _n.addJS(this.root + 'FormElements/text.js');
+				await _n.addJS(this.root + 'FormElements/Text/text.js');
 				
 				this.elements[ele.getAttribute('tabindex')] = new MaterializeText({
 					element: ele,
@@ -154,7 +161,7 @@ class MaterializeForm {
 	processSelect(ele){
         return new Promise(async (resolve, reject) => {
             try {
-				await _n.addJS(this.root + 'FormElements/select.js')
+				await _n.addJS(this.root + 'FormElements/Select/select.js')
 
 				this.elements[ele.getAttribute('tabindex')] = new MaterializeSelect({
 					element: ele,
