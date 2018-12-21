@@ -2,7 +2,6 @@ class MaterializeValidators {
 
 	constructor(...args){
         const options = Object.assign({
-			errorMessage: '',
         }, args[0]);
 		Object.assign(this, options);
     }
@@ -20,8 +19,6 @@ class MaterializeValidators {
 	 * @param (int|event object) value
 	 */
 	integer(value){
-		let bool = true;
-
 		if(typeof(value) === 'object'){
 			let keyCode = _n.keyCode(event);
 
@@ -30,10 +27,11 @@ class MaterializeValidators {
 				(_n.specialCharKeys.includes(keyCode)) ||
 				(event.shiftKey && _n.shiftSpecialCharKeys.includes(keyCode))
 			){
-				bool = false;
+				throw new Error('Numbers Only');
+			} else {
+				return true;
 			}
+		} else {
 		}
-
-		return bool;
 	}
 }

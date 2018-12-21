@@ -31,18 +31,15 @@ class MaterializeText extends MaterializeField {
 
 	applyValidators(){
 		if('validator' in this.parent.dataset){
-			let validatorString = this.parent.dataset.validator;
-			let validators = new MaterializeValidators();
-			let validator = validators.getValidator(validatorString);
+			let validatorName = this.parent.dataset.validator;
+			this.validator = validatorName;
 
-			this.validator = validator;
-			this.errorMessage = validators.errorMessage;
-
+			// list of keydown validators for text field
 			let keydownEventValidators = [
 				'integer'
 			];
 
-			if(keydownEventValidators.includes(validatorString)){
+			if(keydownEventValidators.includes(validatorName)){
 				this.bindKeydownValidatorEvents();
 			}
 		}
