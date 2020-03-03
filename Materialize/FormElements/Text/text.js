@@ -6,9 +6,32 @@ export default class MaterializeText extends MaterializeField {
 
 		super( ...args );
 
+		this.applyValidators( );
 		this.bindEvents( );
 
 	}
+
+	applyValidators ( ) {
+
+        if ( "validator" in this.parent.dataset ) {
+
+            let validatorName = this.parent.dataset.validator;
+            this.validator = validatorName;
+
+            // list of keydown validators for text field
+            let keydownEventValidators = [
+                "integer"
+            ];
+
+            if( keydownEventValidators.includes( validatorName ) ) {
+
+                this.bindKeydownValidatorEvents( );
+
+            }
+
+        }
+
+    }
 
     bindEvents ( ) {
 

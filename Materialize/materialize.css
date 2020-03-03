@@ -10,6 +10,11 @@
 	font-family: 'Roboto', sans-serif;
 }
 
+.material:focus,
+.material *:focus {
+	outline: none;
+}
+
 /**
  * LABELS
  */

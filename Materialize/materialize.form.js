@@ -3,50 +3,62 @@ import MaterializeValidators from "./FormElements/validators.js";
 
 export default class MaterializeForm {
 
-	#nodes = { };
+	#nodes = [ ]; // array of nodes belonging to the form
 
 	constructor ( ...args ) {
 
         const options = Object.assign( {
             form: null, // this is just the id not the element
-            currentFocus: null, // order number of element in this.elements ( NOT tab number but number position ie position 0 maybe tab number 10 so not this.elements key but this.elements position )
+            currentFocus: null, // order number of element in this.#nodes ( NOT tab number but number position ie position 0 maybe tab number 10 so not this.#nodes key but this.#nodes position )
         }, args[ 0 ] );
 
         Object.assign(this, options);
 
         this.form = document.getElementById( options.form );
 
-        this.hijackTabbing();
+        this.hijackTabbing( );
     }
 
 	async buildIndexes ( ) {
 
         let matches = this.form.querySelectorAll( "[tabindex]" );
 
-        let count = 0;
-        let matchLength = matches.length;
-
 		try {
 
-			for ( let node of Object.values( matches ) ) {
+			for await ( let node of Object.values( matches ) ) {
 
 				switch( true ) {
 
 					case node.hasAttribute( "type" ) && node.getAttribute( "type" ) === "text":
 
-						this.processInput( node );
+						await this.processInput( node );
 
 					break;
 
 					case node.tagName === "SELECT":
 
-						this.processSelect( node );
+						await this.processSelect( node );
 
 					break;
 
 				}
 
+	            _n.on( node, "focusin.trackfocus", ( event ) => {
+
+                    let tabindex = node.getAttribute( "tabindex" );
+
+                    this.currentFocus = Object.keys( this.#nodes ).indexOf( tabindex );
+
+                } );
+
 			}
+
+			this.currentFocus = 0;
+
+			this.forceTab( {
+				materialObj: this.#nodes[ Object.keys( this.#nodes )[ this.currentFocus ] ],
+				direction: "absolute"
+			} );
 
 		} catch ( err ) {
 
@@ -56,9 +68,84 @@ export default class MaterializeForm {
 
 	}
 
+    forceTab ( ...args ) {
+
+        const options = Object.assign({
+			materialObj: null,
+            direction: false, // options are closest/next/previous/absolute (absolute required field to be filled out this will force the tab to this field specifically)
+            isTab: false,
+        }, args[0]);
+
+        let event = null;
+        let eleLength = null;
+        let currentFocusedObj = null;
+
+        switch ( options.direction ) {
+
+            case "absolute":
+
+                event = new Event( "focusin" );
+				options.materialObj.node.dispatchEvent( event );
+
+            break;
+
+            case "next":
+
+                eleLength = Object.keys( this.#nodes ).length;
+                currentFocusedObj = this.#nodes[ Object.keys( this.#nodes )[ this.currentFocus ] ];
+
+                event = new Event( "focusout" );
+                event.isTab = options.isTab;
+
+                this.currentFocus = this.currentFocus + 1;
+
+                if ( this.currentFocus >= eleLength ) {
+
+                    this.currentFocus = 0;
+
+                }
+
+                currentFocusedObj.node.dispatchEvent( event );
+
+                this.forceTab( {
+					materialObj: this.#nodes[ Object.keys( this.#nodes )[ this.currentFocus ] ],
+                    direction: "absolute"
+                } );
+
+            break;
+
+            case "previous":
+
+                eleLength = Object.keys( this.#nodes ).length;
+                currentFocusedObj = this.#nodes[ Object.keys( this.#nodes )[ this.currentFocus ] ];
+
+                event = new Event( "focusout" );
+                event.isTab = options.isTab;
+
+                this.currentFocus = this.currentFocus - 1;
+
+                if ( this.currentFocus < 0 ) {
+
+                    this.currentFocus = ( eleLength - 1 );
+
+                }
+
+                currentFocusedObj.node.dispatchEvent( event );
+
+                this.forceTab( {
+					materialObj: this.#nodes[ Object.keys( this.#nodes )[ this.currentFocus ] ],
+                    direction: 'absolute'
+                } );
+
+            break;
+
+        }
+
+	}
+
     hijackTabbing ( ) {
 
-        /*_n.on( document, "keydown", ( event ) => {
+		_n.on( document, "keydown", ( event ) => {
 
             var keyCode = _n.keyCode( event );
 
@@ -67,6 +154,7 @@ export default class MaterializeForm {
                 event.preventDefault( );
 
                 switch ( event.shiftKey ) {
+
                     case false:
 
                         this.forceTab( {
@@ -75,6 +163,7 @@ export default class MaterializeForm {
                         } );
 
                     break;
+
                     case true:
 
                         this.forceTab( {
@@ -88,45 +177,61 @@ export default class MaterializeForm {
 
             }
 
-        } );*/
+        } );
 
     }
 
-	async processInput( node ) {
+	processInput ( node ) {
 
-		try {
+		return new Promise( async ( resolve, reject ) => {
 
-			let MaterializeText = await import( "./FormElements/Text/text.js" );
+			try {
 
-			this.#nodes[ node.getAttribute( "tabindex" ) ] = new MaterializeText.default( {
-				node: node,
-				parent: node.closest( "div.material.text" )
-			} );
+				let MaterializeText = await import( "./FormElements/Text/text.js" );
 
-		} catch ( err ) {
+				this.#nodes[ node.getAttribute( "tabindex" ) ] = new MaterializeText.default( {
+					node: node,
+					parent: node.closest( "div.material.text" )
+				} );
 
-			console.error( err );
+				resolve( );
 
-		}
+			} catch ( err ) {
+
+				console.error( err );
+
+				reject( );
+
+			}
+
+		} );
 
 	}
 
-    async processSelect( node ) {
+    processSelect ( node ) {
 
-        try {
+		return new Promise( async ( resolve, reject ) => {
 
-            let MaterializeSelect = await import( "./FormElements/Select/select.js" );
+			try {
 
-            this.#nodes[ node.getAttribute( "tabindex" ) ] = new MaterializeSelect.default( {
-                node: node,
-                parent: node.closest( "div.material.select" )
-            } );
+				let MaterializeSelect = await import( "./FormElements/Select/select.js" );
 
-        } catch ( err ) {
+				this.#nodes[ node.getAttribute( "tabindex" ) ] = new MaterializeSelect.default( {
+					node: node,
+					parent: node.closest( "div.material.select" )
+				} );
 
-            console.error( err );
+				resolve( );
 
-        }
+			} catch ( err ) {
+
+				console.error( err );
+
+				reject( );
+
+			}
+
+		} );
 
     }
 

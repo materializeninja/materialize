@@ -108,13 +108,13 @@ export default class MaterializeSelect extends MaterializeField {
             let nextOptionNode = null;
             let arrow = null;
 
-            if ( arrow = _n.isArrowKey( keyCode ) ) {
+            if ( _n.isArrowKey( keyCode ) ) {
 
                 event.preventDefault( ); // stop scrolling
 
-                switch ( arrow ) {
+                switch ( keyCode ) {
 
-                    case "UP":
+					case 38: // UP
 
                         optionKey = parseInt( _n.getKeyByValue( this.options, optionNode ) );
                         nextOptionKey = ( optionKey - 1 ) < 0 ? ( optionsCount - 1 ) : optionKey - 1;
@@ -124,7 +124,7 @@ export default class MaterializeSelect extends MaterializeField {
 
                     break;
 
-                    case "DOWN":
+					case 40: // DOWN
 
                         optionKey = parseInt( _n.getKeyByValue( this.options, optionNode ) );
                         nextOptionKey = ( optionKey + 1 ) >= optionsCount ? 0 : optionKey + 1;
@@ -251,11 +251,11 @@ export default class MaterializeSelect extends MaterializeField {
         let keyCode = _n.keyCode( event );
 
         // if its a tab then we need to hide else we'll let option event handle this
-        /*if ( _n.isTab( event ) ) {
+        if ( _n.isTab( event ) ) {
 
             this.hideDropDown( );
 
-        }*/
+        }
 
     }
 

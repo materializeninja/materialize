@@ -1,12 +1,13 @@
 export default class Ninja {
 
 	#functionMap = [ ];
-	#arrowKeys = {
-		"37": "LEFT",
-		"38": "UP",
-		"39": "RIGHT",
-		"40": "DOWN",
-	};
+
+	#directionKeys = [ 9, 13, 33, 34, 35, 36, 37, 38, 39, 40 ]; // 13 && 9 are enter and tab keys
+	#letterKeys = [ 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90 ];
+	#specialCharKeys = [ 106, 107, 109, 111, 186, 187, 188, 189, 190, 191, 192, 219, 220, 221, 222 ];
+	#shiftSpecialCharKeys = [ 46, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57 ]; // shiftKey must be pressed for these keys to be special characters
+
+	#arrowKeys = [ 37, 38, 39, 40 ] // LEFT, UP, RIGHT, DOWN
 
 	empty ( mixedVar ) {
 
@@ -67,8 +68,68 @@ export default class Ninja {
 
 	isArrowKey ( keyCode ) {
 
-        return this.#arrowKeys[ keyCode ] !== undefined ? this.#arrowKeys[ keyCode ] : false;
+        return this.#arrowKeys.includes( keyCode ) ? true : false;
 
+    }
+
+	isLetterKey ( keyCode ) {
+
+        return this.#letterKeys.includes( keyCode ) ? true : false;
+
+	}
+
+    isNumber ( value, strict = true ) {
+
+        let bool = null;
+
+        if ( strict ) {
+
+            bool = ! isNaN( value ) && ( value instanceof Number || typeof( value ) == "number" ) ? true : false;
+
+        } else {
+
+            bool = ! isNaN( value - parseFloat( value ) );
+
+        }
+
+        return bool;
+    }
+
+	isShiftSpecialCharKey ( keyCode ) {
+
+        return this.#shiftSpecialCharKeys.includes( keyCode ) ? true : false; 
+
+    }
+
+	isSpecialCharKey ( keyCode ) {
+
+        return this.#specialCharKeys.includes( keyCode ) ? true : false;
+
+    }
+
+    /**
+     * Because we hijacked tabbing materialize ninja adds
+     * A custom param to the events object called isTab
+     * Because of that calue can either be the keyCode value
+     * Or the event value passed from an event
+     *
+     * @param ( int | obj ) value = keyCode || event
+     */
+    isTab ( value ) {
+
+        let bool = null;
+
+        if( this.isNumber( value ) ) {
+
+            bool = value === 9 ? true : false;
+
+        } else {
+
+            bool = ! _n.empty( value.isTab ) ? true : false;
+
+        }
+
+        return bool;
     }
 
     keyCode ( event ) {
