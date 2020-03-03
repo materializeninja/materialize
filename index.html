@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+<link href="Materialize/materialize.css" rel="stylesheet" />
+
+<style>
+
+	div#NinjaForm {
+		grid: auto-flow / 200px 1fr;
+		display: grid;
+		grid-gap: 10px 10px;
+	}
+
+	h1 { 
+		grid-column: 1 / 3;
+	}
+
+</style>
+
+<script type="module">
+
+	import Materialize from "./Materialize/materialize.js";
+
+	// add to window scope so it can be access in console, if you want
+	window.NinjaForm = new Materialize( )
+		.Form( {
+			form: 'NinjaForm',
+		} );
+
+</script>
+
+<title>Materialize.Ninja!</title>
+<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon" />
+
+<div id="NinjaForm">
+
+	<h1>Text Tag</h1>
+
+    <div class="material text">
+        <label for="default-text-field"><span>Default Text Field</span></label>
+        <input type="text" id="default-text-field" name="default-text-field" value="" tabindex="10">
+    </div>
+
+    <div class="material text">
+        <label for="default-text-field1"><span>Default Text Field</span></label>
+        <input type="text" id="default-text-field1" name="default-text-field" value="" tabindex="1">
+    </div>
+
+    <div class="material text">
+        <label for="default-text-field2"><span>Default Text Field</span></label>
+        <input type="text" id="default-text-field2" name="default-text-field" value="" tabindex="15">
+    </div>
+
+	<h1>Select Tag</h1>
+
+    <div class="material select">
+        <label for="default-select-field"><span>Default Select Field</span></label>
+        <select tabindex="30">
+            <option value=""></option>
+            <option value="test1">Test 1</option>
+            <option value="test2">Test 2</option>
+            <option value="test3">Test 3</option>
+            <option value="test4">Test 4</option>
+            <option value="test5">Test 5</option>
+            <option value="test6">Test 6</option>
+            <option value="test7">Test 7</option>
+            <option value="test8">Test 8</option>
+            <option value="test9">Test 9</option>
+        </select>
+    </div>
+
+    <div class="material select">
+        <label for="default-select-field"><span>Default Select Field</span></label>
+        <select tabindex="30">
+            <option value="test1">Test 1</option>
+            <option value="test2">Test 2</option>
+            <option value="test3">Test 3</option>
+            <option value="test4">Test 4</option>
+            <option value="test5" selected>Test 5</option>
+            <option value="test6">Test 6</option>
+            <option value="test7">Test 7</option>
+            <option value="test8">Test 8</option>
+            <option value="test9">Test 9</option>
+        </select>
+    </div>
+
+</div>

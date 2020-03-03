@@ -1,35 +1,47 @@
-class Materialize {
+export default class Materialize {
 
-	constructor(...args){
-		const materilizeScriptTag = document.querySelectorAll('script[src$="materialize.js"]')[0];
-		const materilizeScriptTagSrc = materilizeScriptTag.getAttribute('src');
-		const materilizeScriptRoot = materilizeScriptTagSrc.replace('materialize.js', '');
+	#form;
 
-        const options = Object.assign({
-            root: materilizeScriptRoot, // path to root dir of materialize.js
-        }, args[0]);
-		Object.assign(this, options);
+	constructor ( ) {
 
-		return this;
+		this.init( );
+
 	}
 
-	async Form(...args){
-		const options = Object.assign({
-			form: null,
-		}, args[0]);
+	async init ( ) {
 
-		try {
-			let value = await _n.addJS(this.root + 'materialize.form.js');
+		let Ninja = await import( "./ninja.js" );
 
-			this.form = new MaterializeForm({
-				form: options.form,
-				root: this.root,
-			});
+        /**
+         * Setting Ninja helper globally so it doesn't
+         * Need imported and newed everytime it needs used
+         */
+        window._n = new Ninja.default( );
 
-			this.form.buildIndexes();
-		} catch(err) {
-		}
-
-		return this;
 	}
+
+	async Form ( ...args ) {
+
+        const options = Object.assign( {
+            form: null
+        }, args[ 0 ] );
+
+        try {
+
+			let MaterializeForm = await import( "./materialize.form.js" );
+
+            this.#form = new MaterializeForm.default( {
+                form: options.form
+            } );
+
+            this.#form.buildIndexes( );
+
+        } catch( err ) {
+
+			console.error( err );
+
+        }
+
+        return this;
+    }
 }

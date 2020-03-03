@@ -1,251 +1,305 @@
-class MaterializeSelect extends MaterializeField {
+import MaterializeField from "./../field.js";
 
-    constructor(...args){
-        const options = Object.assign({
+export default class MaterializeSelect extends MaterializeField {
+
+    constructor ( ...args ) {
+		const options = Object.assign( {
 			value: { },
-            element: null,
-            parent: null,
-			multiselect: false,
-			parts: { }, // node parts of the select object
-			options: [ ], // node options of select object
-			activeOption: null, // node of current active option
-        }, args[0]);
+            multiselect: false,
+            parts: { 
+				selectElement: null,
+				selectedValues: null,
+				selectArrow: null,
+				selectOptions: null
+			}, // node parts of the select object
+            options: [ ], // node options of select object
+            activeOption: null, // node of current active option
+        }, args[ 0 ] );
 
-		super(options);
-        Object.assign(this, options);
+        super( ...args );
 
-		this.buildSelectElement();
-		this.bindEvents();
+		Object.assign( this, options );
+
+		this.buildSelectElement( );
+        this.bindEvents( );
+
     }
 
-	activateOption(optionObj = null){
-		optionObj = optionObj === null ? this.options[0] : optionObj;
+    activateOption ( optionNode = null ) {
 
-		this.deactivateOption();
-		this.bindOptionKeyEvents(optionObj);
-		this.activeOption = optionObj;
+        optionNode = optionNode === null ? this.options[ 0 ] : optionNode;
 
-		optionObj.classList.add('active');
-		optionObj.focus();
-	}
-	deactivateOption(optionObj = null){
-		optionObj = optionObj === null ? this.activeOption : optionObj;
+        this.deactivateOption( );
+        this.bindOptionKeyEvents( optionNode );
+        this.activeOption = optionNode;
 
-		if(optionObj !== null){
-			this.unbindOptionKeyEvents(optionObj);
-			optionObj.classList.remove('active');
-		}
-	}
+        optionNode.classList.add( "active" );
+        optionNode.focus( );
 
-	addOptionValue(optionObj){
-		let value = optionObj.dataset.value;
-		let text = optionObj.innerText;
+    }
 
-		let selectedOptionHTML = document.createElement('div');
-		selectedOptionHTML.dataset.value = value;
-		selectedOptionHTML.innerText = text;
+    addOptionValue ( optionObj ) {
 
-		switch(this.multiselect){
-			case false:
-				this.parts.selectedValuesHTML.innerHTML = '';
-				this.value = { };
-			break;
-			case true:
-			break;
-		}
+        let value = optionObj.dataset.value;
+        let text = optionObj.innerText;
+        let selectedOption = document.createElement('div');
 
-		this.parts.selectedValuesHTML.append(selectedOptionHTML);
+        selectedOption.dataset.value = value;
+        selectedOption.innerText = text;
 
-		if(!_n.empty(value)){
-			this.value[value] = text;
-		}
+        switch ( this.multiselect ) {
 
-		this.hideDropDown();
-	}
+            case false:
 
-    bindEvents(){
-		let _event = null;
+                this.parts.selectedValues.innerHTML = "";
+                this.value = { };
 
-        _n.on(this.parent, 'click', (event) => {
-			this.element.focus();
+            break;
+
+            case true:
+            break;
+
+        }
+
+        this.parts.selectedValues.append( selectedOption );
+
+        if( ! _n.empty( value ) ) {
+
+            this.value[ value ] = text;
+
+        }
+
+        this.hideDropDown( );
+    }
+
+    bindEvents ( ) {
+
+        _n.on( this.parent, "click.select", ( event ) => {
+
+            this.node.focus( );
+
         });
 
-		_n.on(this.element, 'keydown', (event) => {
-			let keyCode = _n.keyCode(event);
-			
-			if(keyCode == 9){
-				this.hideDropDown();
-			};
-		});
-    }
+        _n.on( this.node, "keydown.select", ( event ) => {
 
-	bindOptionKeyEvents(optionObj){
-		_n.on(optionObj, 'keydown.option', (event) => {
-			let keyCode = _n.keyCode(event);
-			let optionsCount = Object.keys(this.options).length;
-			let optionKey = null;
-			let nextOptionKey = null;
-			let nextOptionObj = null;
-			let arrow = null;
+            let keyCode = _n.keyCode( event );
 
-			if(arrow = _n.isArrowKey(keyCode)){
-				event.preventDefault(); // stop scrolling
+			switch ( _n.keyCode( event ) ) {
 
-				switch(arrow){
-					case 'UP':
-                        optionKey = parseInt(_n.getKeyByValue(this.options, optionObj));
-                        nextOptionKey = (optionKey - 1) < 0 ? (optionsCount - 1) : optionKey - 1;
-                        nextOptionObj = this.options[nextOptionKey];
+				case 19:
 
-                        this.activateOption(nextOptionObj);
-					break;
-					case 'DOWN':
-						optionKey = parseInt(_n.getKeyByValue(this.options, optionObj));
-						nextOptionKey = (optionKey + 1) >= optionsCount ? 0 : optionKey + 1;
-						nextOptionObj = this.options[nextOptionKey];
+					this.hideDropDown( );
 
-						this.activateOption(nextOptionObj);
-					break;
-				}
-			} else if(keyCode == 13) {
-				this.deactivateOption(optionObj);
-				this.addOptionValue(optionObj);
-			};
-		});
-	}
-	unbindOptionKeyEvents(optionObj){
-		_n.off(optionObj, 'keydown.option');
-	}
+				break;
 
-	buildSelectElement(){
-		/**
-		 * Build area to put selected value(s)
-		 */
-		this.parts.selectElementHTML = document.createElement('div');
-		this.parts.selectElementHTML.classList.add('material-select-element');
-
-		this.parts.selectedValuesHTML = document.createElement('div');
-		this.parts.selectedValuesHTML.classList.add('material-select-values');
-
-		this.parts.selectArrowHTML = document.createElement('i');
-		this.parts.selectArrowHTML.classList.add('material-icons');
-		this.parts.selectArrowHTML.innerHTML = 'keyboard_arrow_down';
-
-		this.parts.selectElementHTML.append(this.parts.selectArrowHTML);
-        this.parts.selectElementHTML.append(this.parts.selectedValuesHTML);
-		this.parent.append(this.parts.selectElementHTML);
-
-		/**
-		 * Build new material drop down
-		 */
-		this.parts.selectOptionsHTML = document.createElement('div');
-		this.parts.selectOptionsHTML.classList.add('material-select-options');
-
-		this.element.childNodes.forEach((ele) => {
-			if(ele.nodeType > 1){
-				return;
 			}
 
-			let optionHTML = document.createElement('div');
+		} );
+    }
 
-			optionHTML.classList.add('material-select-option');
-			optionHTML.innerHTML = _n.empty(ele.textContent) ? '&#8203;' : ele.textContent;
-			optionHTML.dataset.value = ele.value;
-			optionHTML.setAttribute('tabindex', '-1');
+    bindOptionKeyEvents ( optionNode ) {
 
-            this.options.push(optionHTML);
-            this.parts.selectOptionsHTML.append(optionHTML);
+        _n.on( optionNode, "keydown.option", ( event ) => {
 
-			_n.on(optionHTML, 'mouseenter', (event) => {
-				event.stopPropagation();
+            let keyCode = _n.keyCode( event );
+            let optionsCount = Object.keys( this.options ).length;
+            let optionKey = null;
+            let nextOptionKey = null;
+            let nextOptionNode = null;
+            let arrow = null;
 
-				// before adding more methods make sure they aren't being called by this.activateOption
-				this.activateOption(optionHTML);
-			});
+            if ( arrow = _n.isArrowKey( keyCode ) ) {
 
-			_n.on(optionHTML, 'click.option', (event) => {
-				event.stopPropagation();
+                event.preventDefault( ); // stop scrolling
 
-                // before adding more methods make sure they aren't being called by this.deactivateOption
-				this.deactivateOption(optionHTML);
-				this.addOptionValue(optionHTML);
-			});
+                switch ( arrow ) {
 
-			_n.on(optionHTML, 'mouseleave', (event) => {
-				event.stopPropagation();
+                    case "UP":
 
-                // before adding more methods make sure they aren't being called by this.deactivateOption
-				this.deactivateOption(optionHTML);
-			});
-		});
+                        optionKey = parseInt( _n.getKeyByValue( this.options, optionNode ) );
+                        nextOptionKey = ( optionKey - 1 ) < 0 ? ( optionsCount - 1 ) : optionKey - 1;
+                        nextOptionNode = this.options[ nextOptionKey ];
 
-		this.parent.append(this.parts.selectOptionsHTML);
+                        this.activateOption( nextOptionNode );
+
+                    break;
+
+                    case "DOWN":
+
+                        optionKey = parseInt( _n.getKeyByValue( this.options, optionNode ) );
+                        nextOptionKey = ( optionKey + 1 ) >= optionsCount ? 0 : optionKey + 1;
+                        nextOptionNode = this.options[ nextOptionKey ];
+
+                        this.activateOption( nextOptionNode );
+
+                    break;
+
+                }
+
+            } else if ( keyCode === 13 ) {
+
+                this.deactivateOption( optionNode );
+                this.addOptionValue( optionNode );
+
+            }
+
+        } );
+
+    }
+
+	buildSelectElement ( ) {
 
         /**
-         * 1. Get select width
-         * 2. Get label width
-         * 3. Set parent width to which ever is greater
+         * Build area to put selected value(s)
          */
-        this.parts.labelSpan = this.parent.getElementsByTagName('LABEL')[0].children[0];
-        this.parts.labelSpan.style.position = 'unset';
+        this.parts.selectElement = document.createElement( "div" );
+        this.parts.selectElement.classList.add( "material-select-element" );
 
-        let selectWidth = _n.getWidth(this.element, true);
-        let labelWidth = _n.getWidth(this.parts.labelSpan, true);
-		let arrowWidth = _n.getWidth(this.parts.selectArrowHTML, true);
-        let newWidth = selectWidth >= labelWidth ? selectWidth : labelWidth;
+        this.parts.selectedValues = document.createElement( "div" );
+        this.parts.selectedValues.classList.add( "material-select-values" );
 
-		newWidth = newWidth + arrowWidth
-        this.parent.style.width = newWidth + 'px';
-        this.parts.labelSpan.removeAttribute('style');
+        this.parts.selectArrow = document.createElement( "i" );
+        this.parts.selectArrow.classList.add( "material-icons" );
+        this.parts.selectArrow.innerHTML = "keyboard_arrow_down";
+
+        this.parts.selectElement.append( this.parts.selectArrow );
+        this.parts.selectElement.append( this.parts.selectedValues );
+        this.parent.append( this.parts.selectElement );
+
+        /**
+         * Build new material drop down
+         */
+        this.parts.selectOptions = document.createElement( "div" );
+        this.parts.selectOptions.classList.add( "material-select-options" );
+
+        this.node.childNodes.forEach( ( node ) => {
+
+            if ( node.nodeType > 1 ) {
+
+                return;
+
+            }
+
+            let option = document.createElement( "div" );
+
+            option.classList.add( "material-select-option" );
+			option.innerHTML = _n.empty( node.textContent ) ? "&#8203;" : node.textContent;
+            option.dataset.value = node.value;
+            option.setAttribute( "tabindex", "-1" );
+
+            this.options.push( option );
+            this.parts.selectOptions.append( option );
+
+            _n.on( option, "mouseenter", ( event ) => {
+
+                event.stopPropagation( );
+
+                // before adding more methods make sure they aren't being called by this.activateOption
+                this.activateOption( option );
+
+            } );
+
+            _n.on( option, "click.option", ( event ) => {
+
+                event.stopPropagation( );
+
+                // before adding more methods make sure they aren't being called by this.deactivateOption
+                this.deactivateOption( option );
+                this.addOptionValue( option );
+
+            } );
+
+            _n.on( option, "mouseleave", ( event ) => {
+
+                event.stopPropagation( );
+
+                // before adding more methods make sure they aren't being called by this.deactivateOption
+                this.deactivateOption( option );
+
+            } );
+
+        } );
+
+		this.parent.append( this.parts.selectOptions );
+
 	}
 
-    focusIn(){
-        super.focusIn();
+    deactivateOption ( optionNode = null ) {
 
-		//this.element.focus();
+        optionNode = optionNode === null ? this.activeOption : optionNode;
 
-        this.revealDropDown();
-		this.activateOption();
+        if ( optionNode !== null ) {
+
+            this.unbindOptionKeyEvents( optionNode );
+            optionNode.classList.remove( "active" );
+
+        }
+
     }
 
-    focusOut(event){
-		let keyCode = _n.keyCode(event);
+    focusIn ( ) {
 
-		// if its a tab then we need to hide else we'll let option event handle this
-		if(_n.isTab(event)){
-			this.hideDropDown();
-		}
+        super.focusIn( );
+
+        this.revealDropDown( );
+        this.activateOption( );
+
     }
 
-	hideDropDown(){
-		if(Object.keys(this.value).length === 0){
-			this.parent.classList.remove('active');
-		}
+    focusOut ( event ) {
 
-		this.parent.classList.remove('focus');
-		this.activeOption = null;
+        let keyCode = _n.keyCode( event );
 
-		/*let _event = new Event('click');
-		document.dispatchEvent(_event);*/
+        // if its a tab then we need to hide else we'll let option event handle this
+        /*if ( _n.isTab( event ) ) {
 
-		_n.off(document.body, 'click.select');
-	}
+            this.hideDropDown( );
 
-	revealDropDown(){
+        }*/
 
-        this.parent.classList.add('active');
-        this.parent.classList.add('focus');
-
-        setTimeout(() => {
-            _n.on(document.body, 'click.select', (event) => {
-				event.stopPropagation();
-	
-                this.hideDropDown();
-
-				_n.off(document.body, 'click.select');
-            /*}, {
-                once: true*/
-            });
-        }, 100);
     }
+
+    hideDropDown ( ) {
+
+        if ( Object.keys( this.value ).length === 0 ) {
+
+            this.parent.classList.remove( "active" );
+
+        }
+
+        this.parent.classList.remove( "focus");
+        this.activeOption = null;
+
+        /*let _event = new Event('click');
+        document.dispatchEvent(_event);*/
+
+        _n.off( document.body, "click.selectHide" );
+    }
+
+    revealDropDown ( ) {
+
+        this.parent.classList.add( "active" );
+        this.parent.classList.add( "focus" );
+
+        setTimeout( ( ) => {
+
+            _n.on( document.body, "click.selectHide", ( event ) => {
+
+                event.stopPropagation( );
+
+				this.hideDropDown( );
+
+                _n.off( document.body, "click.selectHide" );
+
+            } );
+
+        }, 100 );
+    }
+
+    unbindOptionKeyEvents ( optionObj ) {
+
+        _n.off( optionObj, "keydown.option" );
+
+    }
+
 }

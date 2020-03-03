@@ -1,172 +1,116 @@
-class Ninja {
+export default class Ninja {
 
-	constructor(...args){
-		const options = Object.assign({
-			scriptsArray: [ ],
-			functionMap: { },
+	#functionMap = [ ];
+	#arrowKeys = {
+		"37": "LEFT",
+		"38": "UP",
+		"39": "RIGHT",
+		"40": "DOWN",
+	};
 
-            directionKeys: [9,13,33,34,35,36,37,38,39,40], //13 && 9 are enter and tab keys
-            letterKeys: [65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90],
-            specialCharKeys: [106,107,109,111,186,187,188,189,190,191,192,219,220,221,222],
-            shiftSpecialCharKeys: [46,48,49,50,51,52,53,54,55,56,57], //shiftKey must be pressed for these keys to be special characters
+	empty ( mixedVar ) {
 
-			arrowKeys: {
-				"37":"LEFT",
-				"38":"UP",
-				"39":"RIGHT",
-				"40":"DOWN",
-			}
-        }, args[0]);
-        Object.assign(this, options);	
-	}
+        let i,
+			len,
+			key,
+			undef,
+			emptyValues = [ undef, null, false, "" ];
 
-	addJS(filepath){
-		/**
-		 * This promise doesn't require a reject
-		 * as it resolves itself if there is an issue
-		 */
-		return new Promise((resolve) => {
-			/**
-			 * If the script has already been added don't add again
-			 */
-			if(this.scriptsArray.includes(filepath)){
-				let script = document.querySelectorAll('[src="'+filepath+'"]');
-				// maybe a more elegant way of doing this maybe not
-				let oldOnload = script[0].onload = script[0].onreadystatechange;
+        for ( i = 0, len = emptyValues.length; i < len; i++ ) {
 
-				script[0].onload = script[0].onreadystatechange = function(){
-					oldOnload();
-                	resolve(true);
-    	        }
-				return;
-			}
+            if ( mixedVar === emptyValues[ i ] ) {
 
-			this.scriptsArray.push(filepath);
+                return true;
 
-			let ele = document.createElement('script');
-			let head = document.getElementsByTagName('head')[0];
+            }
 
-			ele.type = 'text/javascript';
-			ele.src = filepath;
-
-			ele.onload = ele.onreadystatechange = function(){ 
-				resolve(true);
-			}
-
-			head.appendChild(ele);
-		});
-	}
-
-	empty(mixedVar){
-		let undef;
-		let key;
-		let i;
-		let len;
-		let emptyValues = [undef, null, false, 0, '', '0'];
-
-		for (i = 0, len = emptyValues.length; i < len; i++) {
-			if (mixedVar === emptyValues[i]) {
-				return true;
-			}
-		}
-
-		if (typeof mixedVar === 'object') {
-			for (key in mixedVar) {
-				if (mixedVar.hasOwnProperty(key)) {
-					return false;
-				}
-			}
-
-			return true;
-		}
-
-		return false;
-	}
-
-	getWidth(element, ceil = false){
-		let width = element.getBoundingClientRect().width;
-		return ceil ? Math.ceil(width) : width;
-	}
-
-	guid() {
-		function s4() {
-			return Math.floor((1 + Math.random()) * 0x10000)
-				.toString(16)
-				.substring(1);
-		}
-
-		return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-	}
-
-	isArrowKey(keyCode){
-		return this.arrowKeys[keyCode] !== undefined ? this.arrowKeys[keyCode] : false;
-	}
-
-	isNumber(value, strict = true){
-		let bool = null;
-
-		if(strict){
-			bool = !isNaN(value) && (value instanceof Number || typeof(value) == 'number') ? true : false;
-		}else{
-			bool = !isNaN(value - parseFloat(value));
-		}
-
-		return bool;
-	}
-
-	/**
-	 * Because we hijacked tabbing materialize ninja adds
-	 * A custom param to the events object called isTab
-	 * Because of that calue can either be the keyCode value
-	 * Or the event value passed from an event
-	 *
-	 * @param (int|obj) value = keyCode || event
-	 */
-	isTab(value){
-		let bool = null;
-
-		if(this.isNumber(value)){
-			bool = value === 9 ? true : false;
-		} else {
-			bool = !_n.empty(value.isTab) ? true : false;
-		}
-
-		return bool;
-	}
-
-	keyCode(event){
-		let keyCode = event.which || event.keyCode || 0;
-		return keyCode;
-	}
-
-	getKeyByValue(object, value) {
-		return Object.keys(object).find(key => object[key] === value);
-	}
-
-    on(ele, event, func, options){
-        let eleID = ele === document ? ele : ele.getAttribute('id');
-        let _event = event.includes('.') ? event.split('.')[0] : event;
-
-        if(this.empty(eleID)){
-            eleID = this.guid();
-            ele.setAttribute('id', eleID);
         }
 
-        if(typeof(this.functionMap[eleID]) == 'undefined'){
-            this.functionMap[eleID] = { };
-        };
+        if ( typeof mixedVar === "object" ) {
 
-        this.functionMap[eleID][event] = func;
-        ele.addEventListener(_event, this.functionMap[eleID][event], options);
+            for ( key in mixedVar ) {
+
+                if ( mixedVar.hasOwnProperty( key ) ) {
+
+                    return false;
+
+                }
+
+            }
+
+            return true;
+
+        }
+
+        return false;
     }
 
-    off(ele, event, options){
-        let eleID = ele === document ? ele : ele.getAttribute('id');
-        let _event = event.includes('.') ? event.split('.')[0] : event;
+    getKeyByValue ( object, value ) {
 
-        ele.removeEventListener(_event, this.functionMap[eleID][event], options);
-        delete this.functionMap[eleID][event];
+        return Object.keys( object ).find( key => object[ key ] === value );
+
     }
+
+    guid ( ) {
+
+        let s4 = function ( ) {
+
+            return Math
+				.floor( ( 1 + Math.random( ) ) * 0x10000 )
+                .toString( 16 )
+                .substring( 1 );
+
+        }
+
+        return `${s4( )}${s4( )}-${s4( )}-${s4( )}-${s4( )}-${s4( )}${s4( )}${s4( )}`;
+    }
+
+	isArrowKey ( keyCode ) {
+
+        return this.#arrowKeys[ keyCode ] !== undefined ? this.#arrowKeys[ keyCode ] : false;
+
+    }
+
+    keyCode ( event ) {
+
+        let keyCode = event.which || event.keyCode || 0;
+
+        return keyCode;
+
+    }
+
+    on ( node, event, func, options ){
+
+        let nodeID = node === document ? node : node.getAttribute( "id" );
+        let _event = event.includes( "." ) ? event.split( "." )[ 0 ] : event;
+
+        if ( this.empty( nodeID ) ) {
+
+            nodeID = this.guid( );
+            node.setAttribute( "id" , nodeID );
+
+        }
+
+        if ( this.#functionMap[ nodeID ] === undefined ) {
+
+            this.#functionMap[ nodeID ] = { };
+
+        }
+
+        this.#functionMap[ nodeID ][ event ] = func;
+
+        node.addEventListener( _event, this.#functionMap[ nodeID ][ event ], options );
+    }
+
+    off ( node, event, options ){
+
+        let nodeID = node === document ? node : node.getAttribute( "id" );
+        let _event = event.includes( "." ) ? event.split( "." )[ 0 ] : event;
+
+        node.removeEventListener( _event, this.#functionMap[ nodeID ][ event ], options );
+
+        delete this.#functionMap[ nodeID ][ event ];
+
+    }
+
 }
-
-const _n = new Ninja();

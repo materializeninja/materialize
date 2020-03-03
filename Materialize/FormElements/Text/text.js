@@ -1,72 +1,38 @@
-class MaterializeText extends MaterializeField {
+import MaterializeField from "./../field.js";
 
-    constructor(...args){
-        const options = Object.assign({
-            element: null,
-            parent: null,
-			value: null,
-        }, args[0]);
+export default class MaterializeText extends MaterializeField {
 
-		super(options);
-        Object.assign(this, options);
+	constructor ( ...args ) {
 
-		this.adjustFieldSize();
-		this.applyValidators();
-		this.bindEvents();
+		super( ...args );
+
+		this.bindEvents( );
+
+	}
+
+    bindEvents ( ) {
+
+        _n.on( this.node, "keyup", ( event ) => {
+
+            this.value = event.target.value;
+
+        } );
     }
 
-	set value(value){
-		this._value = value
-	}
-	get value(){
-		return this._value
-	}
+    focusOut ( ) {
 
-	adjustFieldSize(){
-		let labelSpan = this.parent.getElementsByTagName('LABEL')[0].children[0];
-		let labelWidth = _n.getWidth(labelSpan, true);
+        super.focusOut( );
 
-		this.parent.style.width = labelWidth + 'px';
-	}
+		if ( _n.empty( this.value ) ) {
 
-	applyValidators(){
-		if('validator' in this.parent.dataset){
-			let validatorName = this.parent.dataset.validator;
-			this.validator = validatorName;
+			this.parent.classList.remove( "active" );
 
-			// list of keydown validators for text field
-			let keydownEventValidators = [
-				'integer'
-			];
+        } else {
 
-			if(keydownEventValidators.includes(validatorName)){
-				this.bindKeydownValidatorEvents();
-			}
-		}
-	}
+            this.parent.classList.add( "active" );
 
-	bindEvents(){
-		_n.on(this.element, 'keyup', (event) => {
-			this.value = event.target.value;
-		});
-	}
+        }
 
-	bindKeydownValidatorEvents(){
-		super.bindKeydownValidatorEvents();
-	}
+    }
 
-	focusIn(){
-		super.focusIn();
-		this.element.select();
-	}
-
-	focusOut(){
-		super.focusOut();
-
-		if(!_n.empty(this.value)){
-			this.parent.classList.add('active');
-		}else{
-            this.parent.classList.remove('active');
-		}
-	}
 }

@@ -2,18 +2,51 @@
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 
 .material {
-    display: inline-block;
+    display: block;
     margin: 10px 0;
 	vertical-align: bottom;
+	font-size: 1em;
+	position: relative;
+	font-family: 'Roboto', sans-serif;
+}
+
+/**
+ * LABELS
+ */
+.material label {
+    display: block;
+    position: relative;
+    height: 1em;
+}
+.material label span {
+    transition: .1s all linear;
+    margin-top: 1em;
+    position: absolute;
+    white-space: nowrap;
+}
+.material.focus label span,
+.material.active label span {
+    margin-top: 0;
+    font-size: 0.8em;
+}
+
+/**
+ * MESSAGES
+ */
+.material .messages {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    font-size: 0.7em;
+}
+.material .messages .message.error {
+    color: #F44336;
 }
 
 /**
  * Text Input Styles
  */
 .material.text {
-	font-family: 'Roboto', sans-serif;
-	font-size: 1em;
-    position: relative;
 	cursor: text;	
 }
 .material.text * {
@@ -35,32 +68,9 @@
 }
 
 /**
- * LABELS
- */
-.material label {
-    display: block;
-    position: relative;
-    height: 1em;
-}
-.material label span {
-	transition: .1s all linear;
-    margin-top: 1em;
-	position: absolute;
-	white-space: nowrap;
-}
-.material.focus label span,
-.material.active label span {
-    margin-top: 0;
-    font-size: 0.8em;
-}
-
-/**
  * Select Field
  */
 .material.select {
-    font-family: 'Roboto', sans-serif;
-    font-size: 1em;
-    position: relative;
 	cursor: pointer;
 }
 .material.select * {
@@ -117,20 +127,3 @@
 	background-color: rgba(0,0,0,0.06);
 	outline: none;
 }
-
-/**
- * MESSAGES
- */
-.material .messages {
-	position: absolute;
-    display: flex;
-    flex-direction: column;
-    font-size: 0.7em;
-}
-.material .messages .message.error {
-	color: #F44336;
-}
-
-
-
-
