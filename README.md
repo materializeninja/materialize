@@ -24,10 +24,10 @@ To initialize the script Materialize Form
 </script>
 
 <div id="NinjaForm">
-    <div class="material text">
+    <material text>
         <label for="default-text-field"><span>Default Text Field</span></label>
         <input type="text" id="default-text-field" name="default-text-field" value="" tabindex="1">
-    </div>
+    </material>
 </div>
 ```
 

@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 
-.material {
+material {
     display: block;
     margin: 10px 0;
 	vertical-align: bottom;
@@ -10,27 +10,27 @@
 	font-family: 'Roboto', sans-serif;
 }
 
-.material:focus,
-.material *:focus {
+material:focus,
+material *:focus{
 	outline: none;
 }
 
 /**
  * LABELS
  */
-.material label {
+material label{
     display: block;
     position: relative;
     height: 1em;
 }
-.material label span {
+material label span{
     transition: .1s all linear;
     margin-top: 1em;
     position: absolute;
     white-space: nowrap;
 }
-.material.focus label span,
-.material.active label span {
+material.focus label span,
+material.active label span {
     margin-top: 0;
     font-size: 0.8em;
 }
@@ -38,60 +38,56 @@
 /**
  * MESSAGES
  */
-.material .messages {
+material messages {
     position: absolute;
     display: flex;
     flex-direction: column;
     font-size: 0.7em;
 }
-.material .messages .message.error {
+material messages message.error {
     color: #F44336;
 }
 
 /**
  * Text Input Styles
  */
-.material.text {
+material[ text ] {
 	cursor: text;	
 }
-.material.text * {
+material[ text ] *{
     cursor: text;
 }
-.material.text label {
-}
-.material.text label span {
-}
-.material.text input {
+material[ text ] input {
 	font-size: 1em;
 	background: none;
 	border-width: 0 0 1px 0;
 	border-bottom-color: #000;
 	width: 100%;
 }
-.material.text input:focus {
+material[ text ] input:focus {
 	outline: none;
 }
 
 /**
  * Select Field
  */
-.material.select {
+material[ select ] {
 	cursor: pointer;
 }
-.material.select * {
+material[ select ] * {
     cursor: pointer;
 }
-.material.select label {
+material[ select ] label {
 }
-.material.select label span {
+material[ select ] label span {
 }
-.material.select select {
+material[ select ] select {
 	position: absolute;
     z-index: -5;
     left: -5000px;
 	font-size: 1em;
 }
-.material.select .material-select-element {
+material[ select ] element {
     border-bottom: 1px solid #000;
     display: flex;
 	flex-direction: row-reverse;
@@ -99,17 +95,17 @@
 	min-height: 1em;
     padding: 2px 0px;
 }
-.material.select .material-select-element .material-select-values {
+material[ select ] element values {
     display: flex;
     flex-direction: row;
 	flex-wrap: wrap;
     width: 100%;
 }
-.material.select .material-select-element .material-icons {
+material[ select ] element arrow {
     padding: 0 0.1em;
 	line-height: 0.8em;
 }
-.material.select .material-select-options {
+material[ select ] options {
 	display: flex;
     flex-direction: column;
     background: #FFF;
@@ -123,14 +119,14 @@
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
 	transition: all 0.08s ease-in-out;
 }
-.material.select.focus .material-select-options {
+material[ select ].focus options {
 	height: auto;
 	max-height: 13.3em
 }
-.material.select .material-select-options .material-select-option {
+material[ select ] options option {
 	padding: 0.75em;
 }
-.material.select .material-select-options .material-select-option.active {
+material[ select ] options option.active {
 	background-color: rgba(0,0,0,0.06);
 	outline: none;
 }

@@ -42,7 +42,7 @@ export default class MaterializeSelect extends MaterializeField {
 
         let value = optionObj.dataset.value;
         let text = optionObj.innerText;
-        let selectedOption = document.createElement('div');
+        let selectedOption = document.createElement( "option" );
 
         selectedOption.dataset.value = value;
         selectedOption.innerText = text;
@@ -152,13 +152,11 @@ export default class MaterializeSelect extends MaterializeField {
         /**
          * Build area to put selected value(s)
          */
-        this.parts.selectElement = document.createElement( "div" );
-        this.parts.selectElement.classList.add( "material-select-element" );
+        this.parts.selectElement = document.createElement( "element" );
 
-        this.parts.selectedValues = document.createElement( "div" );
-        this.parts.selectedValues.classList.add( "material-select-values" );
+        this.parts.selectedValues = document.createElement( "values" );
 
-        this.parts.selectArrow = document.createElement( "i" );
+        this.parts.selectArrow = document.createElement( "arrow" );
         this.parts.selectArrow.classList.add( "material-icons" );
         this.parts.selectArrow.innerHTML = "keyboard_arrow_down";
 
@@ -169,8 +167,7 @@ export default class MaterializeSelect extends MaterializeField {
         /**
          * Build new material drop down
          */
-        this.parts.selectOptions = document.createElement( "div" );
-        this.parts.selectOptions.classList.add( "material-select-options" );
+        this.parts.selectOptions = document.createElement( "options" );
 
         this.node.childNodes.forEach( ( node ) => {
 
@@ -180,7 +177,7 @@ export default class MaterializeSelect extends MaterializeField {
 
             }
 
-            let option = document.createElement( "div" );
+            let option = document.createElement( "option" );
 
             option.classList.add( "material-select-option" );
 			option.innerHTML = _n.empty( node.textContent ) ? "&#8203;" : node.textContent;

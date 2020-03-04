@@ -44,6 +44,7 @@ export default class Ninja {
         }
 
         return false;
+
     }
 
     getKeyByValue ( object, value ) {
@@ -64,6 +65,7 @@ export default class Ninja {
         }
 
         return `${s4( )}${s4( )}-${s4( )}-${s4( )}-${s4( )}-${s4( )}${s4( )}${s4( )}`;
+
     }
 
 	isArrowKey ( keyCode ) {
@@ -93,6 +95,7 @@ export default class Ninja {
         }
 
         return bool;
+
     }
 
 	isShiftSpecialCharKey ( keyCode ) {
@@ -130,6 +133,7 @@ export default class Ninja {
         }
 
         return bool;
+
     }
 
     keyCode ( event ) {
@@ -161,6 +165,7 @@ export default class Ninja {
         this.#functionMap[ nodeID ][ event ] = func;
 
         node.addEventListener( _event, this.#functionMap[ nodeID ][ event ], options );
+
     }
 
     off ( node, event, options ){

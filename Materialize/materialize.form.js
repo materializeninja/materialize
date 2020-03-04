@@ -191,7 +191,7 @@ export default class MaterializeForm {
 
 				this.#nodes[ node.getAttribute( "tabindex" ) ] = new MaterializeText.default( {
 					node: node,
-					parent: node.closest( "div.material.text" )
+					parent: node.closest( "material" ) //div.material.text" )
 				} );
 
 				resolve( );
@@ -218,7 +218,7 @@ export default class MaterializeForm {
 
 				this.#nodes[ node.getAttribute( "tabindex" ) ] = new MaterializeSelect.default( {
 					node: node,
-					parent: node.closest( "div.material.select" )
+					parent: node.closest( "material" ) //div.material.select" )
 				} );
 
 				resolve( );

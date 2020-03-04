@@ -78,8 +78,7 @@ export default class MaterializeField {
 
     buildMessagesContainer ( ) {
 
-        this.parts.messagesContainer = document.createElement('div');
-        this.parts.messagesContainer.classList.add('messages');
+        this.parts.messagesContainer = document.createElement('messages');
 
         this.parent.append( this.parts.messagesContainer );
 
@@ -104,9 +103,9 @@ export default class MaterializeField {
 
         }
 
-        let message = document.createElement( "div" );
+        let message = document.createElement( "message" );
 
-        message.classList.add( "message", "error" );
+        message.classList.add( "error" );
 
         if ( options.class !== null ) {
 
