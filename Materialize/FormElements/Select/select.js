@@ -270,10 +270,8 @@ export default class MaterializeSelect extends MaterializeField {
         this.parent.classList.remove( "focus");
         this.activeOption = null;
 
-        /*let _event = new Event('click');
-        document.dispatchEvent(_event);*/
+        _n.off( document, "click.selectHide" );
 
-        _n.off( document.body, "click.selectHide" );
     }
 
     revealDropDown ( ) {
@@ -283,13 +281,13 @@ export default class MaterializeSelect extends MaterializeField {
 
         setTimeout( ( ) => {
 
-            _n.on( document.body, "click.selectHide", ( event ) => {
+            _n.on( document, "click.selectHide", ( event ) => {
 
                 event.stopPropagation( );
 
 				this.hideDropDown( );
 
-                _n.off( document.body, "click.selectHide" );
+                _n.off( document, "click.selectHide" );
 
             } );
 

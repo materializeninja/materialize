@@ -95,12 +95,14 @@
     border-bottom: 1px solid #000;
     display: flex;
 	flex-direction: row-reverse;
-    height: 1em;
+    height: auto;
+	min-height: 1em;
     padding: 2px 0px;
 }
-.material.select .material-select-element .material-select-values{
+.material.select .material-select-element .material-select-values {
     display: flex;
     flex-direction: row;
+	flex-wrap: wrap;
     width: 100%;
 }
 .material.select .material-select-element .material-icons {

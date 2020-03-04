@@ -68,8 +68,6 @@ export default class MaterializeField {
 
             } catch ( err ) {
 
-				console.error( err );
-
                 event.preventDefault( );
 
             }
