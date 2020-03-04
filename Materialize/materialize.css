@@ -1,10 +1,9 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto');
-@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@import url( "https://fonts.googleapis.com/css?family=Roboto" );
+@import url( "https://fonts.googleapis.com/icon?family=Material+Icons" );
 
 material {
     display: block;
     margin: 10px 0;
-	vertical-align: bottom;
 	font-size: 1em;
 	position: relative;
 	font-family: 'Roboto', sans-serif;
@@ -129,4 +128,65 @@ material[ select ] options option {
 material[ select ] options option.active {
 	background-color: rgba(0,0,0,0.06);
 	outline: none;
+}
+
+/**
+ * Radio Buttons
+ */
+material[ radio ] {
+	display: inline-block;
+}
+material[radio] > input {
+	display: none;
+}
+material[radio] > label {
+	cursor: pointer;
+	height: auto;
+	text-indent: 1.2em;
+}
+material[radio] > label:before, 
+material[radio] > label:after {
+	position: absolute;
+	content: '';
+	border-radius: 50%;
+	transition: all .3s ease;
+	transition-property: transform, border-color;
+}
+material[radio] > label:before {
+	width: 0.8em;
+    height: 0.8em;
+	border: 0.1em solid rgba(0, 0, 0, 0.54);
+    display: block;
+    top: 50%;
+    transform: translateY(-50%);
+}
+material[radio] > input:checked + label:before {
+    border-color: #337ab7;
+    animation: ripple 0.2s linear forwards;
+}
+material[radio] > label:after {
+	top: 0.31em;
+    left: 0.21em;
+    width: 0.55em;
+    height: 0.55em;
+    transform: scale( 0 );
+    background: #337ab7;
+}
+material[radio] > input:checked + label:after{
+    transform: scale( 1 );
+}
+
+/**
+ * Animations
+ */
+@keyframes ripple {
+  0% {
+    box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0);
+  }
+  50% {
+    box-shadow: 0px 0px 0px 15px rgba(0, 0, 0, 0.1);
+  }
+  100% {
+    box-shadow: 0px 0px 0px 15px rgba(0, 0, 0, 0);
+  }
 }
