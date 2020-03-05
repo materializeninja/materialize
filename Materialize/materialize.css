@@ -141,8 +141,10 @@ material[radio] > input {
 }
 material[radio] > label {
 	cursor: pointer;
-	height: auto;
-	text-indent: 1.2em;
+    height: auto;
+    padding-left: 1.2em;
+    display: flex;
+    align-items: center;
 }
 material[radio] > label:before, 
 material[radio] > label:after {
@@ -155,25 +157,24 @@ material[radio] > label:after {
 material[radio] > label:before {
 	width: 0.8em;
     height: 0.8em;
-	border: 0.1em solid rgba(0, 0, 0, 0.54);
-    display: block;
-    top: 50%;
-    transform: translateY(-50%);
+    border: 0.1em solid rgba(0, 0, 0, 0.54);
+    left: 0;
 }
 material[radio] > input:checked + label:before {
     border-color: #337ab7;
     animation: ripple 0.2s linear forwards;
 }
 material[radio] > label:after {
-	top: 0.31em;
-    left: 0.21em;
-    width: 0.55em;
-    height: 0.55em;
-    transform: scale( 0 );
+	width: 0.8em;
+    height: 0.8em;
     background: #337ab7;
+    left: 0;
+    border: 0.1em solid transparent;
+    transform: scale( 0 );
+    transform-origin: center;
 }
 material[radio] > input:checked + label:after{
-    transform: scale( 1 );
+    transform: scale( 0.5 );
 }
 
 /**
