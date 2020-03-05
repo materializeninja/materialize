@@ -1,6 +1,10 @@
 @import url( "https://fonts.googleapis.com/css?family=Roboto" );
 @import url( "https://fonts.googleapis.com/icon?family=Material+Icons" );
 
+:root {
+	--m-accent: rgba( 30, 136, 229 );
+}
+
 material {
     display: block;
     margin: 10px 0;
@@ -151,8 +155,8 @@ material[radio] > label:after {
 	position: absolute;
 	content: '';
 	border-radius: 50%;
-	transition: all .3s ease;
-	transition-property: transform, border-color;
+	transition: 0.2s cubic-bezier(0.35, 0.9, 0.4, 0.9);
+	transition-property: transform, opacity;
 }
 material[radio] > label:before {
 	width: 0.8em;
@@ -161,33 +165,23 @@ material[radio] > label:before {
     left: 0;
 }
 material[radio] > input:checked + label:before {
-    border-color: #337ab7;
-    animation: ripple 0.2s linear forwards;
+    border-color: var( --m-accent );
 }
 material[radio] > label:after {
 	width: 0.8em;
     height: 0.8em;
-    background: #337ab7;
+    background: var( --m-accent );
     left: 0;
     border: 0.1em solid transparent;
     transform: scale( 0 );
-    transform-origin: center;
 }
-material[radio] > input:checked + label:after{
+material[radio]:hover > label:after {
+	transform: scale( 2 );
+	opacity: 0.2;
+}
+material[radio] > input:checked + label:after {
     transform: scale( 0.5 );
 }
-
-/**
- * Animations
- */
-@keyframes ripple {
-  0% {
-    box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0);
-  }
-  50% {
-    box-shadow: 0px 0px 0px 15px rgba(0, 0, 0, 0.1);
-  }
-  100% {
-    box-shadow: 0px 0px 0px 15px rgba(0, 0, 0, 0);
-  }
+material[radio]:hover > input:checked + label:after {
+	opacity: 1;
 }
