@@ -2,11 +2,6 @@ export default class Ninja {
 
 	#functionMap = [ ];
 
-	#directionKeys = [ 9, 13, 33, 34, 35, 36, 37, 38, 39, 40 ]; // 13 && 9 are enter and tab keys
-	#letterKeys = [ 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90 ];
-	#specialCharKeys = [ 106, 107, 109, 111, 186, 187, 188, 189, 190, 191, 192, 219, 220, 221, 222 ];
-	#shiftSpecialCharKeys = [ 46, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57 ]; // shiftKey must be pressed for these keys to be special characters
-
 	#arrowKeys = [ 37, 38, 39, 40 ] // LEFT, UP, RIGHT, DOWN
 
 	empty ( mixedVar ) {
@@ -47,6 +42,34 @@ export default class Ninja {
 
     }
 
+	getCursorPosition ( node ) {
+	
+		let pos = 0,
+			posEnd = 0;
+
+		if ( "selectionStart" in node ) {
+
+			pos = node.selectionStart;
+			posEnd = node.selectionEnd;
+
+		} else if( "selection" in document ) {
+
+			node.focus();
+
+			var Snode = document.selection.createRange( );
+			var SnodeLength = document.selection.createRange( ).text.length;
+
+			Snode.moveStart( "character", - node.value.length );
+
+			pos = Snode.text.length - SnodeLength;
+			posEnd = Snode.text.length;
+
+		}
+
+		return [ pos, posEnd ];
+
+	}
+
     getKeyByValue ( object, value ) {
 
         return Object.keys( object ).find( key => object[ key ] === value );
@@ -68,45 +91,50 @@ export default class Ninja {
 
     }
 
-	isArrowKey ( keyCode ) {
+	isArrowKey ( key ) {
 
-        return this.#arrowKeys.includes( keyCode ) ? true : false;
+		return [ "ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft" ].includes( key );
+
+        //return this.#arrowKeys.includes( keyCode ) ? true : false;
 
     }
 
-	isLetterKey ( keyCode ) {
+	/**
+	 * @param string key single value
+	 * @return boolean
+	 * https://regex101.com/r/M01aDp/2/tests
+	 */
+	isLetterKey ( key ) {
 
-        return this.#letterKeys.includes( keyCode ) ? true : false;
+        const regex = /^[A-Za-z]{1}$/;
+
+        return regex.test( key );
 
 	}
 
-    isNumber ( value, strict = true ) {
+	/**
+	 * @param string value
+	 * @return boolean
+	 * https://regex101.com/r/irBKnq/5/tests
+	 */
+    isNumber ( value ) {
 
-        let bool = null;
-
-        if ( strict ) {
-
-            bool = ! isNaN( value ) && ( value instanceof Number || typeof( value ) == "number" ) ? true : false;
-
-        } else {
-
-            bool = ! isNaN( value - parseFloat( value ) );
-
-        }
-
-        return bool;
+		const regex = /^\d+$/;
+		
+		return regex.test( value );
 
     }
 
-	isShiftSpecialCharKey ( keyCode ) {
+	/**
+     * @param string key single value
+     * @return boolean
+	 * https://regex101.com/r/isfG4s/3/tests
+	 */
+	isSpecialCharKey ( key ) {
 
-        return this.#shiftSpecialCharKeys.includes( keyCode ) ? true : false; 
+        const regex = /^[^A-Za-z0-9]{1}$/;
 
-    }
-
-	isSpecialCharKey ( keyCode ) {
-
-        return this.#specialCharKeys.includes( keyCode ) ? true : false;
+        return regex.test( key );
 
     }
 
@@ -178,5 +206,14 @@ export default class Ninja {
         delete this.#functionMap[ nodeID ][ event ];
 
     }
+
+	spliceString ( cursorPositionStart, cursorPositionStop, source, string ) {
+
+		let start = cursorPositionStart;
+		let stop = cursorPositionStart - cursorPositionStop;
+
+		return `${ source.slice( 0, start ) }${ string }${ source.slice( start + Math.abs( stop ) ) }`;
+
+	}
 
 }

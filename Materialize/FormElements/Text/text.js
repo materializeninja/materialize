@@ -35,11 +35,12 @@ export default class MaterializeText extends MaterializeField {
 
     bindEvents ( ) {
 
-        _n.on( this.node, "keyup", ( event ) => {
+        _n.on( this.node, "keyup.updateValue", ( event ) => {
 
             this.value = event.target.value;
 
         } );
+
     }
 
     focusOut ( ) {

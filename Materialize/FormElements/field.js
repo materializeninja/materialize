@@ -60,19 +60,85 @@ export default class MaterializeField {
 
 	bindKeydownValidatorEvents ( ) {
 
+		_n.on( this.node, "beforeinput.validator", ( event ) => {
+
+			if ( event.data !== null ) {
+
+				event.key = event.data;
+
+				keydownEvent( event );
+
+			}
+
+		} );
+
         _n.on( this.node, "keydown.validator", ( event ) => {
 
-            try {
+            if ( event.key === "Unidentified" ) {
 
-                this.validateField( { value: event } );
-
-            } catch ( err ) {
-
+                /**
+                 * More than likely this is a mobile/android device
+                 * If so let the beforeinput.validator event
+                 * Handle validations as keydown does not
+                 * Contain values needed to validate input
+                 */
                 event.preventDefault( );
 
             }
 
-        } );
+			keydownEvent( event );
+
+		} );
+
+		let keydownEvent = ( event ) => {
+
+			let cursorPosition = _n.getCursorPosition( event.target ),
+				valuePreview = event.target.value,
+				key = event.key;
+
+			/**
+			 * If key === "Unidentified"
+			 * This is probably coming from beforeinput
+			 * And is an action key thats ok like Delete
+			 */
+			if ( key !== "Unidentified" ) {
+
+				if (
+					! _n.isArrowKey( event.key ) &&
+					! event.metaKey &&
+					! [
+						"Alt",
+						"Backspace",
+						"Control",
+						"Delete", 
+						"End",
+						"Home",
+						"Shift"
+					  ].includes( key )
+				) {
+
+					valuePreview = _n.spliceString( 
+						cursorPosition[ 0 ], 
+						cursorPosition[ 1 ], 
+						event.target.value, 
+						key 
+					);
+
+				}
+
+				try {
+
+					this.validateField( { value: valuePreview } );
+
+				} catch ( err ) {
+
+					event.preventDefault( );
+
+				}
+
+			}
+
+        };
 
 	}
 
@@ -116,6 +182,7 @@ export default class MaterializeField {
         message.innerText = options.message;
 
         this.parts.messagesContainer.append( message );
+
     }
 
     focusIn( event ) {

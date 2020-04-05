@@ -13,9 +13,13 @@ material {
 	font-family: 'Roboto', sans-serif;
 }
 
+material,
 material:focus,
-material *:focus{
+material *,
+material *:focus {
 	outline: none;
+	-webkit-tap-highlight-color: transparent;
+	-webkit-touch-callout: none;
 }
 
 /**
@@ -66,9 +70,6 @@ material[ text ] input {
 	border-width: 0 0 1px 0;
 	border-bottom-color: #000;
 	width: 100%;
-}
-material[ text ] input:focus {
-	outline: none;
 }
 
 /**
@@ -139,6 +140,10 @@ material[ select ] options option.active {
  */
 material[ radio ] {
 	display: inline-block;
+}
+material[ radio ],
+material[ radio ] * {
+	user-select: none;
 }
 material[radio] > input {
 	display: none;

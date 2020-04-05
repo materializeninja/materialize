@@ -147,6 +147,11 @@ export default class MaterializeForm {
 
 		_n.on( document, "keydown", ( event ) => {
 
+			/**
+			 * There is no "tabbing" on mobile devices
+			 * Because of that we don't have to worry
+			 * About making this part mobile friendly
+			 */
             var keyCode = _n.keyCode( event );
 
             if ( keyCode === 9 ) {

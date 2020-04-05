@@ -17,41 +17,22 @@ export default class MaterializeValidators {
     }
 
 	/**
-     * @param ( int | event object ) value
+     * @param ( int | string ) value
      */
     integer ( value ) {
 
-        if ( typeof( value ) === "object" ) {
+		if (
+			value.length > 0 &&
+			! _n.isNumber( value ) 
+		) {
 
-            let keyCode = _n.keyCode(event);
+			throw new Error( "Numbers Only" );
 
-            if (
-                ( _n.isLetterKey( keyCode ) ) ||
-                ( _n.isSpecialCharKey( keyCode ) ) ||
-                ( event.shiftKey && _n.isShiftSpecialCharKey( keyCode ) )
-            ) {
+		} else {
 
-                throw new Error( "Numbers Only" );
+			return true;
 
-            } else {
-
-                return true;
-
-            }
-
-        } else {
-
-			if ( ! Number.isInteger( value ) ) {
-
-				throw new Error( "Numbers Only" );
-
-			} else {
-
-				return true;
-
-			}
-
-        }
+		}
 
     }
 
