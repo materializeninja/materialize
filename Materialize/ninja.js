@@ -174,7 +174,7 @@ export default class Ninja {
 
     on ( node, event, func, options ){
 
-        let nodeID = node === document ? node : node.getAttribute( "id" );
+        let nodeID = node === document ? "document" : node.getAttribute( "id" );
         let _event = event.includes( "." ) ? event.split( "." )[ 0 ] : event;
 
         if ( this.empty( nodeID ) ) {
@@ -191,14 +191,14 @@ export default class Ninja {
         }
 
         this.#functionMap[ nodeID ][ event ] = func;
-
+        
         node.addEventListener( _event, this.#functionMap[ nodeID ][ event ], options );
 
     }
 
     off ( node, event, options ){
 
-        let nodeID = node === document ? node : node.getAttribute( "id" );
+        let nodeID = node === document ? "document" : node.getAttribute( "id" );
         let _event = event.includes( "." ) ? event.split( "." )[ 0 ] : event;
 
         node.removeEventListener( _event, this.#functionMap[ nodeID ][ event ], options );

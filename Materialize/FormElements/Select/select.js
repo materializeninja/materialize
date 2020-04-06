@@ -69,6 +69,9 @@ export default class MaterializeSelect extends MaterializeField {
 
         }
 
+        optionObj.classList.add( "active" );
+        optionObj.blur( );
+
         this.hideDropDown( );
     }
 
@@ -235,8 +238,8 @@ export default class MaterializeSelect extends MaterializeField {
     }
 
     focusIn ( ) {
-
-        super.focusIn( );
+        
+        super.focusIn( event );
 
         this.revealDropDown( );
         this.activateOption( );
@@ -274,7 +277,6 @@ export default class MaterializeSelect extends MaterializeField {
     revealDropDown ( ) {
 
         this.parent.classList.add( "active" );
-        this.parent.classList.add( "focus" );
 
         setTimeout( ( ) => {
 
@@ -284,12 +286,11 @@ export default class MaterializeSelect extends MaterializeField {
 
 				this.hideDropDown( );
 
-                _n.off( document, "click.selectHide" );
-
             } );
 
         }, 100 );
-    }
+
+	}
 
     unbindOptionKeyEvents ( optionObj ) {
 

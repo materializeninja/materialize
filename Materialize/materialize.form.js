@@ -27,29 +27,60 @@ export default class MaterializeForm {
 
 			for await ( let node of Object.values( matches ) ) {
 
-				switch( true ) {
+	            let MaterialFieldObject;
+
+				switch ( true ) {
+
+                    case node.tagName === "SELECT":
+
+						MaterialFieldObject = await import( "./FormElements/Select/select.js" );
+
+                    break;
 
 					case node.hasAttribute( "type" ) && node.getAttribute( "type" ) === "text":
 
-						await this.processInput( node );
+						MaterialFieldObject = await import( "./FormElements/Text/text.js" );
 
 					break;
 
-					case node.tagName === "SELECT":
+                    case node.hasAttribute( "type" ) && node.getAttribute( "type" ) === "radio":
 
-						await this.processSelect( node );
+                        MaterialFieldObject = await import( "./FormElements/Radio/radio.js" );
 
 					break;
 
 				}
 
-	            _n.on( node, "focusin.trackfocus", ( event ) => {
+				if ( MaterialFieldObject !== undefined ) {
 
-                    let tabindex = node.getAttribute( "tabindex" );
+					let nodeClass = new MaterialFieldObject.default( {
+						node: node,
+						parent: node.closest( "material" )
+					} );
 
-                    this.currentFocus = Object.keys( this.#nodes ).indexOf( tabindex );
+					this.#nodes[ node.getAttribute( "tabindex" ) ] = nodeClass;
 
-                } );
+					_n.on( node, "focusin.trackfocus", ( event ) => {
+
+						let tabindex = node.getAttribute( "tabindex" );
+
+						this.currentFocus = Object.keys( this.#nodes ).indexOf( tabindex );
+
+						nodeClass.focusIn( event );
+
+						_n.on( node, "focusout.trackfocus", ( event ) => {
+
+							node.blur( );
+
+							nodeClass.focusOut( event );
+
+							_n.off( node, "focusout.trackfocus" );
+
+						} );
+
+					} );
+
+				}
 
 			}
 
@@ -84,8 +115,15 @@ export default class MaterializeForm {
 
             case "absolute":
 
-                event = new Event( "focusin" );
-				options.materialObj.node.dispatchEvent( event );
+				/**
+				 * Calling focus( ) in Chrome also causes a focusin event 
+				 * to dispatch resulting in a double call of listener 
+				 * applied in applyFocusEventListener( );
+				 */
+                // event = new Event( "focusin" );
+				// options.materialObj.node.dispatchEvent( event );
+
+				options.materialObj.node.focus( );
 
             break;
 
@@ -146,7 +184,7 @@ export default class MaterializeForm {
     hijackTabbing ( ) {
 
 		_n.on( document, "keydown", ( event ) => {
-
+		    
 			/**
 			 * There is no "tabbing" on mobile devices
 			 * Because of that we don't have to worry
@@ -183,60 +221,6 @@ export default class MaterializeForm {
             }
 
         } );
-
-    }
-
-	processInput ( node ) {
-
-		return new Promise( async ( resolve, reject ) => {
-
-			try {
-
-				let MaterializeText = await import( "./FormElements/Text/text.js" );
-
-				this.#nodes[ node.getAttribute( "tabindex" ) ] = new MaterializeText.default( {
-					node: node,
-					parent: node.closest( "material" ) //div.material.text" )
-				} );
-
-				resolve( );
-
-			} catch ( err ) {
-
-				console.error( err );
-
-				reject( );
-
-			}
-
-		} );
-
-	}
-
-    processSelect ( node ) {
-
-		return new Promise( async ( resolve, reject ) => {
-
-			try {
-
-				let MaterializeSelect = await import( "./FormElements/Select/select.js" );
-
-				this.#nodes[ node.getAttribute( "tabindex" ) ] = new MaterializeSelect.default( {
-					node: node,
-					parent: node.closest( "material" ) //div.material.select" )
-				} );
-
-				resolve( );
-
-			} catch ( err ) {
-
-				console.error( err );
-
-				reject( );
-
-			}
-
-		} );
 
     }
 

@@ -20,7 +20,7 @@ export default class MaterializeField {
 
         this.validators = new MaterializeValidators( );
 
-        this.applyFocusEventListener( );
+//        this.applyFocusEventListener( );
         this.buildMessagesContainer( );
     }
 
@@ -36,11 +36,9 @@ export default class MaterializeField {
 
     }
 
-    applyFocusEventListener ( ) {
+/*    applyFocusEventListener ( ) {
 
-        _n.on( this.node, "focusin", ( event ) => {
-
-			this.node.focus( );
+        _n.on( this.node, "focus", ( event ) => {
 
             this.focusIn( event );
 
@@ -56,7 +54,7 @@ export default class MaterializeField {
 
         } );
 
-    }
+    }*/
 
 	bindKeydownValidatorEvents ( ) {
 
