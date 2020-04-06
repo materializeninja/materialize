@@ -2,8 +2,9 @@
 @import url( "https://fonts.googleapis.com/icon?family=Material+Icons" );
 
 :root {
-	--m-accent: rgba( 30, 136, 229 );
+	--m-accent: 30, 136, 229;
 }
+
 
 material {
     display: block;
@@ -165,21 +166,22 @@ material[radio] > label:after {
 	content: '';
 	border-radius: 50%;
 	transition: 0.2s cubic-bezier(0.35, 0.9, 0.4, 0.9);
-	transition-property: transform, opacity;
+	transition-property: transform, opacity, box-shadow;
 }
 material[radio] > label:before {
 	width: 0.8em;
     height: 0.8em;
     border: 0.1em solid rgba(0, 0, 0, 0.54);
+	box-shadow: 0px 0px 0px 0rem rgba( var( --m-accent ), 0.2 );
     left: 0;
 }
 material[radio] > input:checked + label:before {
-    border-color: var( --m-accent );
+    border-color: rgba( var( --m-accent ), 1 );
 }
 material[radio] > label:after {
 	width: 0.8em;
     height: 0.8em;
-    background: var( --m-accent );
+    background: rgba( var( --m-accent ), 1 );
     left: 0;
     border: 0.1em solid transparent;
     transform: scale( 0 );
@@ -187,12 +189,16 @@ material[radio] > label:after {
 material[radio].focus > label:after,
 material[radio]:hover > label:after {
 	transform: scale( 2 );
-	opacity: 0.2;
+    background: rgba( var( --m-accent ), 0.2 );
 }
 material[radio] > input:checked + label:after {
     transform: scale( 0.5 );
 }
+material[radio].focus > input:checked + label:before,
+material[radio]:hover > input:checked + label:before {
+    box-shadow: 0px 0px 0px 0.5rem rgba( var( --m-accent ), 0.2 );
+}
 material[radio].focus > input:checked + label:after,
 material[radio]:hover > input:checked + label:after {
-	opacity: 1;
+    background: rgba( var( --m-accent ), 1 );
 }
