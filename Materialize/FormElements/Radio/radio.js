@@ -6,6 +6,18 @@ export default class MaterializeRadio extends MaterializeField {
 
 		super( ...args );
 
+		this.bindEvents( );
+
+	}
+
+	bindEvents ( ) {
+		
+		_n.on( this.node, "afterFocus", ( event ) => {
+			
+			this.parent.classList.remove( "focus" );
+			
+		} );
+		
 	}
 
 }

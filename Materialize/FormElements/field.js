@@ -20,8 +20,9 @@ export default class MaterializeField {
 
         this.validators = new MaterializeValidators( );
 
-//        this.applyFocusEventListener( );
+        this.applyFocusEventListener( );
         this.buildMessagesContainer( );
+        
     }
 
     set value ( value ) {
@@ -36,25 +37,25 @@ export default class MaterializeField {
 
     }
 
-/*    applyFocusEventListener ( ) {
+    applyFocusEventListener ( ) {
 
-        _n.on( this.node, "focus", ( event ) => {
+        _n.on( this.node, "focus.main", ( event ) => {
 
             this.focusIn( event );
 
-            _n.on( this.node, "focusout", ( event ) => {
+            _n.on( this.node, "focusout.main", ( event ) => {
 
 				this.node.blur( );
 
                 this.focusOut( event );
 
-                _n.off( this.node, "focusout" );
+                _n.off( this.node, "focusout.main" );
 
             } );
 
         } );
 
-    }*/
+    }
 
 	bindKeydownValidatorEvents ( ) {
 
@@ -183,17 +184,36 @@ export default class MaterializeField {
 
     }
 
-    focusIn( event ) {
+    focusIn ( event ) {
+        
+        return new Promise( resolve => {
 
-        this.parent.classList.add( "focus" );
-        this.node.classList.add( "focus" );
+            this.parent.classList.add( "focus" );
+            this.node.classList.add( "focus" );
+            
+            resolve( );
+        
+            let afterFocus = new CustomEvent( "afterFocus", {
+                "detail" : {
+                    "trueTarget": this.node
+                }
+            } );
+            document.dispatchEvent( afterFocus );
+        
+        } );
 
     }
 
-    focusOut( event ) {
+    focusOut ( event ) {
+        
+        return new Promise( resolve => {
 
-        this.parent.classList.remove( "focus" );
-        this.node.classList.remove( "focus" );
+            this.parent.classList.remove( "focus" );
+            this.node.classList.remove( "focus" );
+            
+            resolve( );
+        
+        } );
 
     }
 

@@ -1,8 +1,73 @@
 export default class Ninja {
 
-	#functionMap = [ ];
+	#functionMap = { };
 
-	#arrowKeys = [ 37, 38, 39, 40 ] // LEFT, UP, RIGHT, DOWN
+	#arrowKeys = [ 37, 38, 39, 40 ]; // LEFT, UP, RIGHT, DOWN
+	
+	constructor ( ) {
+	    
+	    this.applyGlobalEvents( );
+	    
+	}
+	
+	applyGlobalEvents ( ) {
+	    
+        this.on( document, "afterFocus", ( event, a, b, c, d ) => {
+            
+            this.dispatchGlobalEvent( event, "afterFocus" );
+
+        } );
+        
+	}
+	
+	dispatchGlobalEvent ( event, eventName ) {
+	    
+	    let trueTarget;
+
+	    if ( event.detail !== undefined && event.detail.trueTarget !== undefined ) {
+	        
+	        trueTarget = event.detail.trueTarget;
+
+	    }
+            
+        for ( let [ k, v ] of Object.entries( this.#functionMap ) ) {
+            
+            if ( v[ eventName ] !== undefined ) {
+                
+                if ( k !== "document" ) {
+                    
+                    let node = document.getElementById( k );
+                    
+                    switch ( true ) {
+                        
+                        case trueTarget === undefined :
+                            
+                            trueTarget = node;
+                            
+                        break;
+                            
+                        case trueTarget.id === undefined || trueTarget.id === "":
+                            
+                            trueTarget = node;
+                        
+                        break;
+                        
+                    }
+                    
+                    if ( node === trueTarget ) {
+                        
+                        let globalEvent = new Event( eventName );
+                        node.dispatchEvent( globalEvent );
+                    
+                    }
+                
+                }
+                
+            }
+            
+        };
+	    
+	}
 
 	empty ( mixedVar ) {
 

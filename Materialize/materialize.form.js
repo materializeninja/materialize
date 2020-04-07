@@ -17,6 +17,7 @@ export default class MaterializeForm {
         this.form = document.getElementById( options.form );
 
         this.hijackTabbing( );
+        
     }
 
 	async buildIndexes ( ) {
@@ -66,13 +67,9 @@ export default class MaterializeForm {
 
 						this.currentFocus = Object.keys( this.#nodes ).indexOf( tabindex );
 
-						nodeClass.focusIn( event );
-
 						_n.on( node, "focusout.trackfocus", ( event ) => {
 
 							node.blur( );
-
-							nodeClass.focusOut( event );
 
 							_n.off( node, "focusout.trackfocus" );
 

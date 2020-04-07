@@ -73,6 +73,7 @@ export default class MaterializeSelect extends MaterializeField {
         optionObj.blur( );
 
         this.hideDropDown( );
+        
     }
 
     bindEvents ( ) {
@@ -98,6 +99,7 @@ export default class MaterializeSelect extends MaterializeField {
 			}
 
 		} );
+		
     }
 
     bindOptionKeyEvents ( optionNode ) {
