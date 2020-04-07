@@ -14,7 +14,17 @@ export default class MaterializeRadio extends MaterializeField {
 		
 		_n.on( this.node, "afterFocus", ( event ) => {
 			
-			this.parent.classList.remove( "focus" );
+			/**
+			 * This solves the issue of leaving the focus state
+			 * When tabbing through the form.
+			 * It's safe to do this because if we were hovering
+			 * The same styling would still be applied
+			 */
+			if ( this.parent.matches( ":hover" ) ) {
+
+				this.parent.classList.remove( "focus" );
+			
+			}
 			
 		} );
 		
