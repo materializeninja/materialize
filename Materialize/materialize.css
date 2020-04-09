@@ -184,9 +184,11 @@ material[radio] > label:after {
     border: 0.1em solid transparent;
     transform: scale( 0 );
 }
+material[radio].focus > label,
 material[radio]:hover > label {
     color: rgb( var( --m-accent ) );
 }
+material[radio].focus > label:before,
 material[radio]:hover > label:before {
     border-color: rgb( var( --m-accent ) );
 }
@@ -201,6 +203,7 @@ material[radio] > input:checked + label:after {
 material[radio].focus > input:checked + label:before,
 material[radio]:hover > input:checked + label:before {
     box-shadow: 0px 0px 0px 0.5rem rgba( var( --m-accent ), 0.2 );
+    border-color: rgb( var( --m-accent ) );
 }
 material[radio].focus > input:checked + label:after,
 material[radio]:hover > input:checked + label:after {
