@@ -160,10 +160,15 @@ export default class MaterializeSelect extends MaterializeField {
         this.parts.selectElement = document.createElement( "element" );
 
         this.parts.selectedValues = document.createElement( "values" );
+        
+        let emptyOption = document.createElement( "option" ); // attempt to get heigh set accuratley on load by placing an empty option node inside the values node
+        //emptyOption.innerHTML = "&nbsp;";
 
         this.parts.selectArrow = document.createElement( "arrow" );
         this.parts.selectArrow.classList.add( "material-icons" );
         this.parts.selectArrow.innerHTML = "keyboard_arrow_down";
+        
+        this.parts.selectedValues.append( emptyOption );
 
         this.parts.selectElement.append( this.parts.selectArrow );
         this.parts.selectElement.append( this.parts.selectedValues );
