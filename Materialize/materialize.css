@@ -65,6 +65,16 @@ material[ text ] {
 material[ text ] *{
     cursor: text;
 }
+material[ text ] label {
+    position: relative;
+}
+material[ text ] label span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    left: 0;
+    right: 0;
+    margin-right: 0.5em;
+}
 material[ text ] input {
 	font-size: 1em;
 	background: none;
@@ -83,8 +93,13 @@ material[ select ] * {
     cursor: pointer;
 }
 material[ select ] label {
+    position: relative;
 }
 material[ select ] label span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    left: 0;
+    right: 0;
 }
 material[ select ] select {
 	position: absolute;
@@ -230,7 +245,7 @@ material[checkbox] > input {
 material[checkbox] > label {
 	cursor: pointer;
     height: auto;
-    padding-left: 1.2em;
+    padding: 0.09em 0 0 1.3em;
     display: flex;
     align-items: center;
 }
@@ -243,6 +258,7 @@ material[checkbox] > label:after {
     border-radius: 50%;
     position: absolute;
     left: 0;
+    top: 0;
 }
 material[checkbox] > label:before {
     content: "check_box_outline_blank";

@@ -50,6 +50,12 @@ export default class MaterializeForm {
 
 					break;
 
+                    case node.hasAttribute( "type" ) && node.getAttribute( "type" ) === "checkbox":
+
+                        MaterialFieldObject = await import( "./FormElements/Checkbox/checkbox.js" );
+
+					break;
+
 				}
 
 				if ( MaterialFieldObject !== undefined ) {
