@@ -282,3 +282,9 @@ export default class Ninja {
 	}
 
 }
+
+/**
+ * Setting Ninja helper globally so it doesn't
+ * Need imported and newed everytime it needs used
+ */
+window._n = window.Ninja = new Ninja( );

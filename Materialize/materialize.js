@@ -10,13 +10,7 @@ export default class Materialize {
 
 	async init ( ) {
 
-		let Ninja = await import( "./ninja.js" );
-
-        /**
-         * Setting Ninja helper globally so it doesn't
-         * Need imported and newed everytime it needs used
-         */
-        window._n = new Ninja.default( );
+		await import( "./ninja.js" );
 
 	}
 
