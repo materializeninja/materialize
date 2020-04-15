@@ -98,7 +98,7 @@ export default class MaterializeField {
 			/**
 			 * If key === "Unidentified"
 			 * This is probably coming from beforeinput
-			 * And is an action key thats ok like Delete
+			 * Or is an action key thats ok like Delete
 			 */
 			if ( key !== "Unidentified" ) {
 
