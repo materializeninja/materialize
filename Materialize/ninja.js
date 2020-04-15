@@ -4,6 +4,13 @@ class Ninja {
 
 	#arrowKeys = [ 37, 38, 39, 40 ]; // LEFT, UP, RIGHT, DOWN
 	
+	#swipeEvents = [
+	    "swipeup",
+	    "swipedown",
+	    "swipeleft",
+	    "swiperight"
+    ];
+	
 	constructor ( ) {
 	    
 	    this.applyGlobalEvents( );
@@ -254,8 +261,20 @@ class Ninja {
             this.#functionMap[ nodeID ] = { };
 
         }
-
+        
         this.#functionMap[ nodeID ][ event ] = func;
+        
+        if ( this.#swipeEvents.includes( _event ) ) {
+            
+            this.#functionMap[ nodeID ][ event ] = this.swipeEvent.bind( this, { 
+                "node": node,
+                "swipeEvent": _event,
+                "callback": func
+            } );
+            
+            _event = "touchstart"
+            
+        }
         
         node.addEventListener( _event, this.#functionMap[ nodeID ][ event ], options );
 
@@ -265,6 +284,12 @@ class Ninja {
 
         let nodeID = node === document ? "document" : node.getAttribute( "id" );
         let _event = event.includes( "." ) ? event.split( "." )[ 0 ] : event;
+        
+        if ( this.#swipeEvents.includes( _event ) ) {
+            
+            _event = "touchstart"
+            
+        }
 
         node.removeEventListener( _event, this.#functionMap[ nodeID ][ event ], options );
 
@@ -279,6 +304,78 @@ class Ninja {
 
 		return `${ source.slice( 0, start ) }${ string }${ source.slice( start + Math.abs( stop ) ) }`;
 
+	}
+	
+	swipeEvent ( data, event ) {
+	    
+	    let node = data.node,
+	        nodeID = node.id,
+	        touchobj = event.changedTouches[ 0 ],
+	        
+	        swipedir = "none",
+            startX = touchobj.pageX,
+            startY = touchobj.pageY,
+            distX,
+            distY,
+            threshold = 15, //required min distance traveled to be considered swipe
+            restraint = 300, // maximum distance allowed at the same time in perpendicular direction
+            allowedTime = 300, // maximum time allowed to travel that distance
+            elapsedTime,
+            startTime = new Date( ).getTime( ),
+            
+	        touchmove = event => {
+	            
+	            event.preventDefault( );
+	            
+	        },
+	        touchend = event => {
+	            
+	            let touchobj = event.changedTouches[ 0 ];
+	            
+	            distX = touchobj.pageX - startX;
+	            distY = touchobj.pageY - startY;
+	            elapsedTime = new Date( ).getTime( ) - startTime;
+	            
+	            if ( elapsedTime <= allowedTime ) {
+	                
+	                if ( Math.abs( distX ) >= threshold && Math.abs( distY ) <= restraint ) {
+	                    
+	                    swipedir = ( distX < 0 ) ? "left" : "right";
+	                    
+	                } else if ( Math.abs( distY ) >= threshold && Math.abs( distX ) <= restraint ) {
+	                    
+	                    swipedir = ( distY < 0 ) ? "up" : "down";
+	                    
+	                }
+	                
+	            }
+	            
+	            if ( swipedir !== "none" ) {
+	            
+    	            let swipevent = `swipe${swipedir}`;
+    	            
+    	            for ( let [ funcName, func ] of Object.entries( this.#functionMap[ nodeID ] ) ) {
+    	            
+    	                if ( funcName.includes( swipevent ) ) {
+    	                    
+    	                    data.callback( event );
+    	                    
+    	                }
+    	                
+    	            }
+    	            
+    	            this.off( node, "touchmove", touchmove );
+    	            this.off( node, "touchend", touchend );
+    	            
+    	            event.preventDefault( );
+	            
+	            }
+	            
+	        };
+
+	    this.on( node, "touchmove", touchmove, { "passive": false, "cancelable": true } );
+	    this.on( node, "touchend", touchend, { "passive": false, "cancelable": true } );
+	    
 	}
 
 }
