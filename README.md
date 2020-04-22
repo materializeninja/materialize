@@ -1,10 +1,11 @@
 To initialize the script Materialize Form
 
 1. Include materialize.css file
-4. Import Materialize from materialize.js file
-5. New Materialize().Form()
-6. Provide ID of form when newing
-7. Make sure all elements you want Materialized have `tabindex` attribute on them. Without this they will be skipped over and not included in your new Materialize Form
+2. Import ninja.js
+3. Import Materialize from materialize.js
+4. New Materialize().Form()
+5. Provide ID of form when newing
+6. Make sure all elements you want Materialized have `tabindex` attribute on them. Without this they will be skipped over and not included in your new Materialize Form
 
 ```html
 <!DOCTYPE html>
@@ -12,6 +13,8 @@ To initialize the script Materialize Form
 <link href="Materialize/materialize.css" rel="stylesheet" />
 
 <script type="module">
+    
+    import "./Materialize/ninja.js";
 
     import Materialize from "./Materialize/materialize.js";
 
