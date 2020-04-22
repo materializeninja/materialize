@@ -19,7 +19,7 @@ class Ninja {
 	
 	applyGlobalEvents ( ) {
 	    
-        this.on( document, "afterFocus", ( event, a, b, c, d ) => {
+        this.on( document, "afterFocus", ( event ) => {
             
             this.dispatchGlobalEvent( event, "afterFocus" );
 
@@ -113,6 +113,16 @@ class Ninja {
         return false;
 
     }
+    
+	emptyNode ( node ) {
+
+		while ( node.firstChild ) {
+
+			node.removeChild( node.firstChild );
+
+		}
+
+	}
 
 	getCursorPosition ( node ) {
 	
@@ -245,13 +255,33 @@ class Ninja {
     }
 
     on ( node, event, func, options ){
+        
+        if (
+            NodeList.prototype.isPrototypeOf( node ) || 
+            HTMLCollection.prototype.isPrototypeOf( node ) 
+        ) {
+            
+            for( let _node of Object.values( node ) ) {
+                
+                this.on( _node, event, func, options );
+                
+            }
+            
+            return;
+            
+        }
 
         let nodeID = node === document ? "document" : node.getAttribute( "id" );
         let _event = event.includes( "." ) ? event.split( "." )[ 0 ] : event;
 
         if ( this.empty( nodeID ) ) {
 
-            nodeID = this.guid( );
+            /**
+             * Due to a quirk in CSS selectors an ID cannot start with an integer
+             * Because of this we'll prepend our IDs with GUID-
+             */
+
+            nodeID = `GUID-${ this.guid( ) }`;
             node.setAttribute( "id" , nodeID );
 
         }
@@ -268,7 +298,7 @@ class Ninja {
             
             this.#functionMap[ nodeID ][ event ] = this.swipeEvent.bind( this, { 
                 "node": node,
-                "swipeEvent": _event,
+                "originEvent": event,
                 "callback": func
             } );
             
@@ -279,19 +309,62 @@ class Ninja {
         node.addEventListener( _event, this.#functionMap[ nodeID ][ event ], options );
 
     }
+    
+	/**
+	 * Query selector of node we're looking for
+	 */
+	onNodeInsert( nodeQuerySelector, callback ) {
+	    
+        let observer = new MutationObserver( ( mutations, observer ) => {
+        
+        	for ( let mutation of mutations ) {
+        	
+        	    for ( let node of mutation.addedNodes ) {
+        	    	
+        	    	// we track only elements, skip other nodes (e.g. text nodes)
+        	    	if ( node.nodeType !== 1 ) { continue; }
+        	    	
+        	    	if ( node.matches( nodeQuerySelector ) ) {
+        	    	    
+        	    	    callback( node, mutations, observer );
+        	    	    
+        	    	    observer.disconnect( );
+        	    		
+        	    	}
+        	
+        		}
+        	
+        	}
+        	
+        } );
+        
+        observer.observe( document, { childList: true, subtree: true } );
+        
+        return observer;
+	    
+	}
 
     off ( node, event, options ){
 
         let nodeID = node === document ? "document" : node.getAttribute( "id" );
         let _event = event.includes( "." ) ? event.split( "." )[ 0 ] : event;
+        let eventMethod = this.#functionMap[ nodeID ][ event ];
         
         if ( this.#swipeEvents.includes( _event ) ) {
             
             _event = "touchstart"
+
+            /**
+             * If we're off'ing a touch event lest make sure
+             * To remove our *.trackEvent listeners as well
+             */
+             
+            this.off( node, `touchmove.trackEvent.${event}` );
+    	    this.off( node, `touchend.trackEvent.${event}` );
             
         }
-
-        node.removeEventListener( _event, this.#functionMap[ nodeID ][ event ], options );
+        
+        node.removeEventListener( _event, eventMethod, options );
 
         delete this.#functionMap[ nodeID ][ event ];
 
@@ -309,6 +382,7 @@ class Ninja {
 	swipeEvent ( data, event ) {
 	    
 	    let node = data.node,
+	        originEvent = data.originEvent,
 	        nodeID = node.id,
 	        touchobj = event.changedTouches[ 0 ],
 	        
@@ -359,22 +433,29 @@ class Ninja {
     	                if ( funcName.includes( swipevent ) ) {
     	                    
     	                    data.callback( event );
+    	            
+    	                    event.preventDefault( );
     	                    
     	                }
     	                
     	            }
     	            
-    	            this.off( node, "touchmove", touchmove );
-    	            this.off( node, "touchend", touchend );
-    	            
-    	            event.preventDefault( );
+    	            this.off( node, `touchmove.trackEvent.${originEvent}`, touchmove );
+    	            this.off( node, `touchend.trackEvent.${originEvent}`, touchend );
 	            
 	            }
 	            
 	        };
 
-	    this.on( node, "touchmove", touchmove, { "passive": false, "cancelable": true } );
-	    this.on( node, "touchend", touchend, { "passive": false, "cancelable": true } );
+        if ( 
+            this.#functionMap[ nodeID ][ `touchmove.trackEvent.${originEvent}`] === undefined &&
+            this.#functionMap[ nodeID ][ `touchend.trackEvent.${originEvent}`] === undefined 
+        ) {
+
+    	    this.on( node, `touchmove.trackEvent.${originEvent}`, touchmove, { "passive": false, "cancelable": true } );
+    	    this.on( node, `touchend.trackEvent.${originEvent}`, touchend, { "passive": false, "cancelable": true } );
+	    
+        }
 	    
 	}
 
@@ -383,5 +464,6 @@ class Ninja {
 /**
  * Setting Ninja helper globally so it doesn't
  * Need imported and newed everytime it needs used
+ * Adding check to see if Ninja already exests and use it else new
  */
-window._n = window.Ninja = new Ninja( );
+window._n = window.Ninja = window.Ninja === undefined ? new Ninja( ) : window.Ninja;
