@@ -8,6 +8,8 @@ export default class MaterializeText extends MaterializeField {
 
 		this.applyValidators( );
 		this.bindEvents( );
+		
+		this.turnOffAutocomplete( );
 
 	}
 
@@ -57,6 +59,12 @@ export default class MaterializeText extends MaterializeField {
 
         }
 
+    }
+    
+    turnOffAutocomplete ( ) {
+        
+        this.node.setAttribute( "autocomplete", "off" );
+        
     }
 
 }

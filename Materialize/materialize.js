@@ -4,14 +4,6 @@ export default class Materialize {
 
 	constructor ( ) {
 
-		this.init( );
-
-	}
-
-	async init ( ) {
-
-		await import( "./ninja.js" );
-
 	}
 
 	async Form ( ...args ) {
