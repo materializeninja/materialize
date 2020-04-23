@@ -34,6 +34,6 @@ To initialize the script Materialize Form
 </div>
 ```
 
-[Materialize.Ninja! Docs](https://docs.materialize.ninja/)
+[Materialize.Ninja! Docs](https://materialize.ninja/#docs)
 
 [Materialize.Ninja! Demo](https://materialize.ninja/)
