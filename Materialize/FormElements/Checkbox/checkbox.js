@@ -8,6 +8,15 @@ export default class MaterializeCheckbox extends MaterializeField {
 
 		this.bindEvents( );
 
+		/**
+		 * Check for events
+		 */
+		if ( this.parent.hasAttribute( "check-toggle" ) ) {
+		
+			this.eventCheckToggle( );
+
+		}
+
 	}
 
 	bindEvents ( ) {
@@ -30,4 +39,32 @@ export default class MaterializeCheckbox extends MaterializeField {
 		
 	}
 
+	/**
+	 * Check Toggle EVENT
+	 * Toggles other elements with the same class or ID specified
+	 * If class string will be ".class" - note period
+	 * If ID string will be "#ID" - note hashtag
+	 */
+	eventCheckToggle( ) {
+
+		_n.on( this.node, "change", ( event ) => {
+		
+			let sourceValue = this.node.checked;
+
+			for ( let node of Object.values( document.querySelectorAll( this.parent.getAttribute( "check-toggle" ) ) ) ) {
+			
+				node.checked = sourceValue;
+
+			}
+
+		} );
+
+	}
+
 }
+
+
+
+
+
+
