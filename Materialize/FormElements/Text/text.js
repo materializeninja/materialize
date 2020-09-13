@@ -24,7 +24,8 @@ export default class MaterializeText extends MaterializeField {
 
             // list of keydown validators for text field
             let keydownEventValidators = [
-                "integer"
+                "integer",
+                "decimal"
             ];
 
             if( keydownEventValidators.includes( validatorName ) ) {
