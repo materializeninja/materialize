@@ -116,11 +116,19 @@ export default class MaterializeField {
 					  ].includes( key )
 				) {
 
+                    /**
+                     * Now that we know this is a valid key lets make sure it's
+                     * A Character key and not an "action"
+                     * If key length is greater than 1 then its probably an action such as "Tab"
+                     * If that is the case we don't want to add "Tab" to our value
+                     */
+                    let keyValue = key.length > 1 ? "" : key;
+
 					valuePreview = _n.spliceString( 
 						cursorPosition[ 0 ], 
 						cursorPosition[ 1 ], 
 						event.target.value, 
-						key 
+						keyValue 
 					);
 
 				}
