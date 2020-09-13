@@ -11,6 +11,8 @@ export default class MaterializeText extends MaterializeField {
 		
 		this.turnOffAutocomplete( );
 
+		this.node.insertAdjacentHTML( "afterend", `<span class="highlight"></span>`);
+
 	}
 
 	applyValidators ( ) {

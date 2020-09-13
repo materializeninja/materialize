@@ -80,7 +80,25 @@ material[ text ] input {
 	background: none;
 	border-width: 0 0 1px 0;
 	border-bottom-color: #000;
-	width: 100%;
+	width: calc( 100% - ( 0.2em * 2 ) );
+	padding: 0.2em;
+}
+material[ text ] input + span.highlight {
+    height: 2px;
+    background: rgb( var( --m-accent ) );
+    width: 0px;
+    display: block;
+    transition: .2s width linear;
+    position: absolute;
+    margin-top: -2px;
+    left: 50%;
+    transform: translateX( -50% );
+}
+material[ text ].focus input + span.highlight{
+    width: 100%;
+}
+material[ text ].focus label {
+    color: rgb( var( --m-accent ) );
 }
 
 /**
