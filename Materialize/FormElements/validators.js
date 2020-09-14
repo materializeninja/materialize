@@ -1,8 +1,10 @@
 export default class MaterializeValidators {
 
-    getValidator ( validator ) {
+    constructor ( fieldObj ) {
 
-        switch ( validator ) {
+        this.fieldObj = fieldObj;
+
+        switch ( fieldObj.validatorName ) {
 
             case "integer":
 
@@ -17,6 +19,59 @@ export default class MaterializeValidators {
                 this.errorMessage = "Decimals Only";
 
                 return this.decimal.bind( this );
+
+            break;
+
+            default:
+
+                /**
+                 * Use this sectiont to check hybrids like Currency
+                 */
+                if ( fieldObj.validatorName.includes( "currency" ) ) {
+                
+                    this.errorMessage = "Invalid Currency Format";
+                    this.country = fieldObj.validatorName.split( "-" )[ 1 ];
+
+                    switch( this.country ) {
+                    
+                        case "US":
+
+                            fieldObj.value = "$";
+                            fieldObj.node.value = "$";
+
+                            fieldObj.focusOut( );
+
+                        break;
+
+                    }
+
+                    return this.currency.bind( this );
+
+                }
+
+            break;
+
+        }
+
+    }
+
+    /**
+     * @param ( int | string ) value
+     */
+    currency ( value ) {
+
+        switch ( this.country ) {
+        
+            case "US":
+            
+                if ( value.length > 1 ) {
+                } else {
+
+                    this.fieldObj.setFieldValue( "$" );
+
+                    return "$";
+
+                }
 
             break;
 
@@ -50,6 +105,8 @@ export default class MaterializeValidators {
 
                     }
 
+                    return value;
+
                 break;
 
                 case 2:
@@ -79,6 +136,8 @@ export default class MaterializeValidators {
 
                     }
 
+                    return value;
+
                 break;
 
                 default:
@@ -95,7 +154,7 @@ export default class MaterializeValidators {
 
         } else {
         
-            return true;
+            return value;
 
         }
 
@@ -115,7 +174,7 @@ export default class MaterializeValidators {
 
 		} else {
 
-			return true;
+			return value;
 
 		}
 

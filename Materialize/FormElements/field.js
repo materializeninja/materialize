@@ -9,8 +9,8 @@ export default class MaterializeField {
             parent: null,
 			value: null,
             valid: true,
-            validators: null, // MaterializeValidators object
-            validator: null, // name of validator being applied
+            validatorMethod: null, // Validator method being applied from MaterializeValidators
+            validatorName: null, // name of validator being applied
 			parts: {
 				messagesContainer: null
 			}
@@ -18,7 +18,12 @@ export default class MaterializeField {
 
         Object.assign( this, options );
 
-        this.validators = new MaterializeValidators( );
+        if ( "validator" in this.parent.dataset ) {
+
+            this.validatorName = this.parent.dataset.validator;
+            this.validatorMethod = new MaterializeValidators( this );
+        
+        }
 
         this.applyFocusEventListener( );
         this.buildMessagesContainer( );
@@ -250,6 +255,13 @@ export default class MaterializeField {
         }
     }
 
+    setFieldValue( value ) {
+
+        this.value = value;
+        this.node.value = value;
+
+    }
+
     /**
      * !IMPORTANT!
      * This should be the only method calling displayError
@@ -260,22 +272,20 @@ export default class MaterializeField {
             value: this.value
         }, args[ 0 ] );
 
-        if ( this.validator !== null ) {
-
-            let validatorMethod = this.validators.getValidator( this.validator );
+        if ( this.validatorName !== null ) {
 
             try{
 
-                validatorMethod( options.value );
+                options.value = this.validatorMethod( options.value );
 
                 this.removeError( {
-                    class: this.validator
+                    class: this.validatorName
                 } );
 
             } catch ( err ) {
 
                 this.displayError( {
-                    class: this.validator,
+                    class: this.validatorName,
                     message: err.message
                 } );
 

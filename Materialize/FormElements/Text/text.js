@@ -17,18 +17,16 @@ export default class MaterializeText extends MaterializeField {
 
 	applyValidators ( ) {
 
-        if ( "validator" in this.parent.dataset ) {
-
-            let validatorName = this.parent.dataset.validator;
-            this.validator = validatorName;
+        if ( this.validatorName ) {
 
             // list of keydown validators for text field
             let keydownEventValidators = [
                 "integer",
-                "decimal"
+                "decimal",
+                "currency-US"
             ];
 
-            if( keydownEventValidators.includes( validatorName ) ) {
+            if( keydownEventValidators.includes( this.validatorName ) ) {
 
                 this.bindKeydownValidatorEvents( );
 
