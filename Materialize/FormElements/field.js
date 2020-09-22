@@ -9,7 +9,7 @@ export default class MaterializeField {
             parent: null,
 			value: null,
             valid: true,
-            validatorMethod: null, // Validator method being applied from MaterializeValidators
+            validatorModel: null, // Validator model being applied from MaterializeValidators
             validatorName: null, // name of validator being applied
 			parts: {
 				messagesContainer: null
@@ -20,9 +20,8 @@ export default class MaterializeField {
 
         if ( "validator" in this.parent.dataset ) {
 
-            this.validatorName = this.parent.dataset.validator;
-            this.validatorMethod = new MaterializeValidators( this );
-        
+			this.applyValidator ( );
+
         }
 
         this.applyFocusEventListener( );
@@ -62,39 +61,60 @@ export default class MaterializeField {
 
     }
 
+	async applyValidator( ) {
+
+        this.validatorName = this.parent.dataset.validator;
+
+		let MaterializeValidator = new MaterializeValidators( );
+		
+		this.validatorModel = await MaterializeValidator.init( this );
+
+	}
+
 	bindKeydownValidatorEvents ( ) {
 
-		_n.on( this.node, "beforeinput.validator", ( event ) => {
+		/**
+		 * If window has onbeforeinput then most likely
+		 * This is a mobile device and lets use this event
+		 * Instead of the traditional onkeydown event
+		 */
+		if ( "onbeforeinput" in window ) {
 
-			if ( event.data !== null ) {
+			_n.on( this.node, "beforeinput.validator", ( event ) => {
 
-				event.key = event.data;
+				if ( event.data !== null ) {
+
+					event.key = event.data;
+
+					keydownEvent( event );
+
+				}
+
+			} );
+
+		} else {
+
+			_n.on( this.node, "keydown.validator", ( event ) => {
+
+				//if ( event.key === "Unidentified" ) {
+
+					/**
+					 * More than likely this is a mobile/android device
+					 * If so let the beforeinput.validator event
+					 * Handle validations as keydown does not
+					 * Contain values needed to validate input
+					 */
+					//event.preventDefault( );
+
+				//}
 
 				keydownEvent( event );
 
-			}
+			} );
 
-		} );
+		}
 
-        _n.on( this.node, "keydown.validator", ( event ) => {
-
-            if ( event.key === "Unidentified" ) {
-
-                /**
-                 * More than likely this is a mobile/android device
-                 * If so let the beforeinput.validator event
-                 * Handle validations as keydown does not
-                 * Contain values needed to validate input
-                 */
-                event.preventDefault( );
-
-            }
-
-			keydownEvent( event );
-
-		} );
-
-		let keydownEvent = ( event ) => {
+		let keydownEvent = async ( event ) => {
 
 			let cursorPosition = _n.getCursorPosition( event.target ),
 				valuePreview = event.target.value,
@@ -112,9 +132,7 @@ export default class MaterializeField {
 					! event.metaKey &&
 					! [
 						"Alt",
-						"Backspace",
 						"Control",
-						"Delete", 
 						"End",
 						"Home",
 						"Shift"
@@ -128,23 +146,67 @@ export default class MaterializeField {
                      * If that is the case we don't want to add "Tab" to our value
                      */
                     let keyValue = key.length > 1 ? "" : key;
+					let start = cursorPosition[ 0 ];
+					let stop = cursorPosition[ 1 ];
 
-					valuePreview = _n.spliceString( 
-						cursorPosition[ 0 ], 
-						cursorPosition[ 1 ], 
-						event.target.value, 
-						keyValue 
+					switch( key ) {
+
+						case "Backspace":
+
+							start = start === stop ? ( start - 1 ) : start;
+
+						break;
+
+						case "Delete":
+
+							stop = start === stop ? ( stop + 1 ) : stop;
+
+						break;
+					
+					}
+
+					valuePreview = _n.spliceString(
+						start,
+						stop,
+						event.target.value,
+						keyValue
 					);
 
 				}
 
-				try {
+				/**
+				 * If the value has not changed then its a waste of time
+				 * Running the rest of the code below
+				 */
+				if ( valuePreview !== event.target.value ) {
 
-					this.validateField( { value: valuePreview } );
+					try {
 
-				} catch ( err ) {
+						/**
+						 * Some field like currency will validate a number input as true
+						 * BUT will enforce the currency sign for the user
+						 * Because of that we want to set the value to what the validator returned
+						 */
+						let validatedValue = await this.validateField( { value: valuePreview } );
 
-					event.preventDefault( );
+						/**
+						 * We are triggering this on a keydown event so we need to
+						 * Delay it a few to allow for a keyup event so we can
+						 * Properly Display the intended value
+						 */
+						setTimeout( ( ) => {
+
+							this.setFieldValue( validatedValue );
+
+						}, 5 );
+
+					} catch ( err ) {
+
+						event.preventDefault( );
+
+						console.error( err );
+
+					}
 
 				}
 
@@ -272,28 +334,34 @@ export default class MaterializeField {
             value: this.value
         }, args[ 0 ] );
 
-        if ( this.validatorName !== null ) {
+		return new Promise( resolve  => {
 
-            try{
+			if ( this.validatorName !== null ) {
 
-                options.value = this.validatorMethod( options.value );
+				try{
 
-                this.removeError( {
-                    class: this.validatorName
-                } );
+					options.value = this.validatorModel.test( options.value );
 
-            } catch ( err ) {
+					this.removeError( {
+						class: this.validatorName
+					} );
 
-                this.displayError( {
-                    class: this.validatorName,
-                    message: err.message
-                } );
+					resolve( options.value );
 
-                throw err;
+				} catch ( err ) {
 
-            }
+					this.displayError( {
+						class: this.validatorName,
+						message: err.message
+					} );
 
-        }
+					throw err;
+
+				}
+
+			}
+
+		} );
 
     }
 
